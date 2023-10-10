@@ -1,8 +1,8 @@
-from typing import Iterable
-
-
 from enum import Enum
-from typing import Optional
+from typing import Optional, Iterable
+
+from royalur.model import Tile
+
 
 class PlayerType(Enum):
     """
@@ -79,6 +79,21 @@ class Tile:
         """
         return Tile(ix + 1, iy + 1)
 
+    def step_towards(self, other: 'Tile') -> 'Tile':
+        """
+        Takes a unit length step towards the other tile.
+        """
+        dx = other.x - self.x
+        dy = other.y - self.y
+
+        if abs(dx) + abs(dy) <= 1:
+            return other
+
+        if abs(dx) < abs(dy):
+            return Tile(self.x, self.y + (1 if dy > 0 else -1))
+        else:
+            return Tile(self.x + (1 if dx > 0 else -1), self.y)
+
     def __hash__(self) -> int:
         return hash((self.x, self.y))
 
@@ -105,6 +120,32 @@ class Tile:
         x = ord(encoded[0]) - (ord('A') - 1)
         y = int(encoded[1:])
         return Tile(x, y)
+
+    @staticmethod
+    def create_list(*coordinates: list[tuple[int, int]]) -> list['Tile']:
+        """
+        Constructs a list of tiles from the tile coordinates.
+        """
+        return [Tile(x, y) for x, y in coordinates]
+
+    @staticmethod
+    def create_path(*coordinates: list[tuple[int, int]]) -> list['Tile']:
+        """
+        Constructs a path from waypoints on the board.
+        """
+        waypoints = Tile.create_list(coordinates)
+        if len(waypoints) == 0:
+            raise ValueError("No coordinates provided")
+
+        path = [waypoints[0]]
+        for index in range(1, len(waypoints)):
+            current = waypoints[index - 1]
+            next = waypoints[index]
+            while current != next:
+                current = current.step_towards(next)
+                path.append(current)
+
+        return path
 
 
 class PathPair:
@@ -239,6 +280,40 @@ class PathPair:
         return self.name == other.name \
             and self.lightWithStartEnd == other.lightWithStartEnd \
             and self.darkWithStartEnd == other.darkWithStartEnd
+
+
+class AsebPathPair(PathPair):
+    """
+    The standard paths that are used for Aseb.
+
+    Citation: W. Crist, A.E. Dunn-Vaturi, and A. de Voogt,
+    Ancient Egyptians at Play: Board Games Across Borders,
+    Bloomsbury Egyptology, Bloomsbury Academic, London, 2016.
+    """
+    LIGHT_PATH = Tile.create_path(
+        (1, 5),
+        (1, 1),
+        (2, 1),
+        (2, 12),
+        (1, 12),
+    )
+    """
+    The path of the light player's pieces.
+    """
+
+    DARK_PATH = Tile.create_path(
+        (1, 5),
+        (1, 1),
+        (2, 1),
+        (2, 12),
+        (1, 12),
+    )
+    """
+    The path of the dark player's pieces.
+    """
+
+    def __init__(self):
+        super().__init__("Aseb", AsebPathPair.LIGHT_PATH, AsebPathPair.DARK_PATH)
 
 
 class BoardShape:
