@@ -297,6 +297,7 @@ class AsebPathPair(PathPair):
     Ancient Egyptians at Play: Board Games Across Borders,
     Bloomsbury Egyptology, Bloomsbury Academic, London, 2016.
     """
+
     NAME: str = "Aseb"
     """
     The name of this type of path pair.
@@ -314,11 +315,11 @@ class AsebPathPair(PathPair):
     """
 
     DARK_PATH: list[Tile] = Tile.create_path(
-        (1, 5),
-        (1, 1),
+        (3, 5),
+        (3, 1),
         (2, 1),
         (2, 12),
-        (1, 12),
+        (3, 12),
     )
     """
     The path of the dark player's pieces.
@@ -328,11 +329,215 @@ class AsebPathPair(PathPair):
         super().__init__(AsebPathPair.NAME, AsebPathPair.LIGHT_PATH, AsebPathPair.DARK_PATH)
 
 
+class BellPathPair(PathPair):
+    """
+    The paths proposed by Bell for the Royal Game of Ur.
+
+    Citation: R.C. Bell, Board and Table Games From Many Civilizations,
+    revised ed., Vol. 1 and 2, Dover Publications, Inc., New York, 1979.
+    """
+
+    NAME: str = "Bell"
+    """
+    The name of this type of path pair.
+    """
+
+    LIGHT_PATH: list[Tile] = Tile.create_path(
+        (1, 5),
+        (1, 1),
+        (2, 1),
+        (2, 8),
+        (1, 8),
+        (1, 6),
+    )
+    """
+    The path of the light player's pieces.
+    """
+
+    DARK_PATH: list[Tile] = Tile.create_path(
+        (3, 5),
+        (3, 1),
+        (2, 1),
+        (2, 8),
+        (3, 8),
+        (3, 6),
+    )
+    """
+    The path of the dark player's pieces.
+    """
+
+    def __init__(self):
+        super().__init__(BellPathPair.NAME, BellPathPair.LIGHT_PATH, BellPathPair.DARK_PATH)
+
+
+class MastersPathPair(PathPair):
+    """
+    The paths proposed by Masters for the Royal Game of Ur.
+
+    Citation: J. Masters, The Royal Game of Ur &amp; The Game of 20 Squares (2021).
+    Available at https://www.tradgames.org.uk/games/Royal-Game-Ur.htm.
+    """
+
+    NAME: str = "Masters"
+    """
+    The name of this type of path pair.
+    """
+
+    LIGHT_PATH: list[Tile] = Tile.create_path(
+        (1, 5),
+        (1, 1),
+        (2, 1),
+        (2, 7),
+        (3, 7),
+        (3, 8),
+        (1, 8),
+        (1, 6),
+    )
+    """
+    The path of the light player's pieces.
+    """
+
+    DARK_PATH: list[Tile] = Tile.create_path(
+        (3, 5),
+        (3, 1),
+        (2, 1),
+        (2, 7),
+        (1, 7),
+        (1, 8),
+        (3, 8),
+        (3, 6),
+    )
+    """
+    The path of the dark player's pieces.
+    """
+
+    def __init__(self):
+        super().__init__(MastersPathPair.NAME, MastersPathPair.LIGHT_PATH, MastersPathPair.DARK_PATH)
+
+
+class MurrayPathPair(PathPair):
+    """
+    The paths proposed by Murray for the Royal Game of Ur.
+
+    Citation: H.J.R. Murray, A History of Board-games Other Than Chess,
+    Oxford University Press, Oxford, 1952.
+    """
+
+    NAME: str = "Murray"
+    """
+    The name of this type of path pair.
+    """
+
+    LIGHT_PATH: list[Tile] = Tile.create_path(
+        (1, 5),
+        (1, 1),
+        (2, 1),
+        (2, 7),
+        (3, 7),
+        (3, 8),
+        (1, 8),
+        (1, 7),
+        (2, 7),
+        (2, 1),
+        (3, 1),
+        (3, 5),
+    )
+    """
+    The path of the light player's pieces.
+    """
+
+    DARK_PATH: list[Tile] = Tile.create_path(
+        (3, 5),
+        (3, 1),
+        (2, 1),
+        (2, 7),
+        (1, 7),
+        (1, 8),
+        (3, 8),
+        (3, 7),
+        (2, 7),
+        (2, 1),
+        (1, 1),
+        (1, 5),
+    )
+    """
+    The path of the dark player's pieces.
+    """
+
+    def __init__(self):
+        super().__init__(MurrayPathPair.NAME, MurrayPathPair.LIGHT_PATH, MurrayPathPair.DARK_PATH)
+
+
 class PathType(Enum):
     """
     The type of path to use in a game.
     """
     ASEB = (1, AsebPathPair.NAME, lambda: AsebPathPair())
+
+    def __init__(self, value: int, name: str, create_path_pair: callable[[], PathPair]):
+        self._value_ = value
+        self.name = name
+        self.create_path_pair = create_path_pair
+
+
+class SkiriukPathPair(PathPair):
+    """
+    The paths proposed by Skiriuk for the Royal Game of Ur.
+
+    Citation: D. Skiriuk, The rules of royal game of ur (2021).
+    Available at https://skyruk.livejournal.com/231444.html.
+    """
+
+    NAME: str = "Skiriuk"
+    """
+    The name of this type of path pair.
+    """
+
+    LIGHT_PATH: list[Tile] = Tile.create_path(
+        (1, 5),
+        (1, 1),
+        (2, 1),
+        (2, 7),
+        (3, 7),
+        (3, 8),
+        (1, 8),
+        (1, 7),
+        (2, 7),
+        (2, 0),
+    )
+    """
+    The path of the light player's pieces.
+    """
+
+    DARK_PATH: list[Tile] = Tile.create_path(
+        (3, 5),
+        (3, 1),
+        (2, 1),
+        (2, 7),
+        (1, 7),
+        (1, 8),
+        (3, 8),
+        (3, 7),
+        (2, 7),
+        (2, 0),
+    )
+    """
+    The path of the dark player's pieces.
+    """
+
+    def __init__(self):
+        super().__init__(SkiriukPathPair.NAME, SkiriukPathPair.LIGHT_PATH, SkiriukPathPair.DARK_PATH)
+
+
+class PathType(Enum):
+    """
+    The type of path to use in a game.
+    """
+    ASEB = (1, AsebPathPair.NAME, lambda: AsebPathPair())
+    BELL = (1, BellPathPair.NAME, lambda: BellPathPair())
+    MASTERS = (1, MastersPathPair.NAME, lambda: MastersPathPair())
+    MURRAY = (1, MurrayPathPair.NAME, lambda: MurrayPathPair())
+    SKIRIUK = (1, SkiriukPathPair.NAME, lambda: SkiriukPathPair())
 
     def __init__(self, value: int, name: str, create_path_pair: callable[[], PathPair]):
         self._value_ = value
