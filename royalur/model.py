@@ -9,7 +9,14 @@ class PlayerType(Enum):
     Represents the players of a game.
     """
     LIGHT = (1, "Light", 'L')
+    """
+    The light player.
+    """
+
     DARK = (2, "Dark", 'D')
+    """
+    The dark player.
+    """
 
     def __init__(self, value: int, name: str, character: str):
         self._value_ = value
@@ -290,7 +297,12 @@ class AsebPathPair(PathPair):
     Ancient Egyptians at Play: Board Games Across Borders,
     Bloomsbury Egyptology, Bloomsbury Academic, London, 2016.
     """
-    LIGHT_PATH = Tile.create_path(
+    NAME: str = "Aseb"
+    """
+    The name of this type of path pair.
+    """
+
+    LIGHT_PATH: list[Tile] = Tile.create_path(
         (1, 5),
         (1, 1),
         (2, 1),
@@ -301,7 +313,7 @@ class AsebPathPair(PathPair):
     The path of the light player's pieces.
     """
 
-    DARK_PATH = Tile.create_path(
+    DARK_PATH: list[Tile] = Tile.create_path(
         (1, 5),
         (1, 1),
         (2, 1),
@@ -313,7 +325,19 @@ class AsebPathPair(PathPair):
     """
 
     def __init__(self):
-        super().__init__("Aseb", AsebPathPair.LIGHT_PATH, AsebPathPair.DARK_PATH)
+        super().__init__(AsebPathPair.NAME, AsebPathPair.LIGHT_PATH, AsebPathPair.DARK_PATH)
+
+
+class PathType(Enum):
+    """
+    The type of path to use in a game.
+    """
+    ASEB = (1, AsebPathPair.NAME, lambda: AsebPathPair())
+
+    def __init__(self, value: int, name: str, create_path_pair: callable[[], PathPair]):
+        self._value_ = value
+        self.name = name
+        self.create_path_pair = create_path_pair
 
 
 class BoardShape:
