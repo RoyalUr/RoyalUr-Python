@@ -1,6 +1,40 @@
 from typing import Iterable
 
 
+from enum import Enum
+from typing import Optional
+
+class PlayerType(Enum):
+    """
+    Represents the players of a game.
+    """
+    LIGHT = (1, "Light", 'L')
+    DARK = (2, "Dark", 'D')
+
+    def __init__(self, value: int, name: str, character: str):
+        self._value_ = value
+        self.name = name
+        self.character = character
+
+    def get_other_player(self) -> 'PlayerType':
+        """
+        Retrieve the PlayerType representing the other player.
+        """
+        if self == PlayerType.LIGHT:
+            return PlayerType.DARK
+        elif self == PlayerType.DARK:
+            return PlayerType.LIGHT
+        else:
+            raise ValueError(f"Unknown PlayerType {self}")
+
+    @staticmethod
+    def to_char(player: Optional['PlayerType']) -> str:
+        """
+        Convert the player to a single character.
+        """
+        return player.character if player else '.'
+
+
 class Tile:
     """
     Represents a position on or off the board.
@@ -26,7 +60,7 @@ class Tile:
     The y-index of the tile. This coordinate is 0-based.
     """
 
-    def __init__(self, x: int, y: int) -> None:
+    def __init__(self, x: int, y: int):
         if x < 1 or x > 26:
             raise ValueError(f"x must fall within the range [1, 26]. Invalid value: {x}")
         if y < 0:
@@ -73,6 +107,140 @@ class Tile:
         return Tile(x, y)
 
 
+class PathPair:
+    """
+    Represents a pair of paths for the light and dark players to
+    move their pieces along in a game of the Royal Game of Ur.
+    """
+
+    name: str
+    """
+    The name of this path pair.
+    """
+
+    lightWithStartEnd: list[Tile]
+    """
+    The path that light players take around the board, including
+    the start and end tiles that exist off the board.
+    """
+
+    darkWithStartEnd: list[Tile]
+    """
+    The path that darj players take around the board, including
+    the start and end tiles that exist off the board.
+    """
+
+    light: list[Tile]
+    """
+    The path that light players take around the board, excluding
+    the start and end tiles that exist off the board.
+    """
+
+    dark: list[Tile]
+    """
+    The path that darj players take around the board, excluding
+    the start and end tiles that exist off the board.
+    """
+
+    lightStart: Tile
+    """
+    The start tile of the light player that exists off the board.
+    """
+
+    lightEnd: Tile
+    """
+    The end tile of the light player that exists off the board.
+    """
+
+    darkStart: Tile
+    """
+    The start tile of the dark player that exists off the board.
+    """
+
+    darkEnd: Tile
+    """
+    The end tile of the dark player that exists off the board.
+    """
+
+    def __init__(
+            self,
+            name: str,
+            lightWithStartEnd: list[Tile],
+            darkWithStartEnd: list[Tile],
+    ):
+
+        self.name = name
+        self.lightWithStartEnd = [*lightWithStartEnd]
+        self.darkWithStartEnd = [*darkWithStartEnd]
+        self.light = self.lightWithStartEnd[1:-1]
+        self.dark = self.darkWithStartEnd[1:-1]
+        self.lightStart = lightWithStartEnd[0]
+        self.lightEnd = lightWithStartEnd[-1]
+        self.darkStart = darkWithStartEnd[0]
+        self.darkEnd = darkWithStartEnd[-1]
+
+    def get(self, player: PlayerType) -> list[Tile]:
+        """
+        Gets the path of the given player, excluding the start and
+        end tiles that exist off the board.
+        """
+        if player == PlayerType.LIGHT:
+            return self.light
+        elif player == PlayerType.DARK:
+            return self.dark
+        else:
+            raise ValueError(f"Unknown PlayerType {player}")
+
+    def getWithStartEnd(self, player: PlayerType) -> list[Tile]:
+        """
+        Gets the path of the given player, including the start and
+        end tiles that exist off the board.
+        """
+        if player == PlayerType.LIGHT:
+            return self.lightWithStartEnd
+        elif player == PlayerType.DARK:
+            return self.darkWithStartEnd
+        else:
+            raise ValueError(f"Unknown PlayerType {player}")
+
+    def getStart(self, player: PlayerType) -> list[Tile]:
+        """
+        Gets the start tile of the given player, which exists off the board.
+        """
+        if player == PlayerType.LIGHT:
+            return self.lightStart
+        elif player == PlayerType.DARK:
+            return self.darkStart
+        else:
+            raise ValueError(f"Unknown PlayerType {player}")
+
+    def getEnd(self, player: PlayerType) -> list[Tile]:
+        """
+        Gets the end tile of the given player, which exists off the board.
+        """
+        if player == PlayerType.LIGHT:
+            return self.lightEnd
+        elif player == PlayerType.DARK:
+            return self.darkEnd
+        else:
+            raise ValueError(f"Unknown PlayerType {player}")
+
+    def isEquivalent(self, other: 'PathPair') -> bool:
+        """
+        Determines whether this set of paths and other cover the same tiles,
+        in the same order. This does not check the start and end tiles that
+        exist off the board, or the name of the paths.
+        """
+        return self.light == other.light
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, PathPair):
+            return False
+        return self.name == other.name \
+            and self.lightWithStartEnd == other.lightWithStartEnd \
+            and self.darkWithStartEnd == other.darkWithStartEnd
+
+
 class BoardShape:
     """
     Holds the shape of a board as a grid, and includes the location of all rosette tiles.
@@ -88,7 +256,7 @@ class BoardShape:
             name: str,
             tiles: set[Tile],
             rosettes: set[Tile]
-    ) -> None:
+    ):
 
         if len(tiles) == 0:
             raise ValueError("A board shape requires at least one tile")
@@ -154,3 +322,14 @@ class BoardShape:
         if not isinstance(other, BoardShape):
             return False
         return self.is_equivalent(other) and self.name == other.name
+
+
+class AsebBoardShape(BoardShape):
+    """
+    The shape of the board used for the game Aseb.
+    This board shape consists of 3 rows. The first row contains
+    4 tiles, the second row contains 12 tiles, and the third
+    also contains 4 tiles.
+    """
+    pass
+
