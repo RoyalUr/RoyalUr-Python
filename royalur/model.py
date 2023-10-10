@@ -326,7 +326,11 @@ class AsebPathPair(PathPair):
     """
 
     def __init__(self):
-        super().__init__(AsebPathPair.NAME, AsebPathPair.LIGHT_PATH, AsebPathPair.DARK_PATH)
+        super().__init__(
+            AsebPathPair.NAME,
+            AsebPathPair.LIGHT_PATH,
+            AsebPathPair.DARK_PATH
+        )
 
 
 class BellPathPair(PathPair):
@@ -367,7 +371,11 @@ class BellPathPair(PathPair):
     """
 
     def __init__(self):
-        super().__init__(BellPathPair.NAME, BellPathPair.LIGHT_PATH, BellPathPair.DARK_PATH)
+        super().__init__(
+            BellPathPair.NAME,
+            BellPathPair.LIGHT_PATH,
+            BellPathPair.DARK_PATH
+        )
 
 
 class MastersPathPair(PathPair):
@@ -412,7 +420,11 @@ class MastersPathPair(PathPair):
     """
 
     def __init__(self):
-        super().__init__(MastersPathPair.NAME, MastersPathPair.LIGHT_PATH, MastersPathPair.DARK_PATH)
+        super().__init__(
+            MastersPathPair.NAME,
+            MastersPathPair.LIGHT_PATH,
+            MastersPathPair.DARK_PATH
+        )
 
 
 class MurrayPathPair(PathPair):
@@ -465,19 +477,11 @@ class MurrayPathPair(PathPair):
     """
 
     def __init__(self):
-        super().__init__(MurrayPathPair.NAME, MurrayPathPair.LIGHT_PATH, MurrayPathPair.DARK_PATH)
-
-
-class PathType(Enum):
-    """
-    The type of path to use in a game.
-    """
-    ASEB = (1, AsebPathPair.NAME, lambda: AsebPathPair())
-
-    def __init__(self, value: int, name: str, create_path_pair: callable[[], PathPair]):
-        self._value_ = value
-        self.name = name
-        self.create_path_pair = create_path_pair
+        super().__init__(
+            MurrayPathPair.NAME,
+            MurrayPathPair.LIGHT_PATH,
+            MurrayPathPair.DARK_PATH
+        )
 
 
 class SkiriukPathPair(PathPair):
@@ -533,11 +537,11 @@ class PathType(Enum):
     """
     The type of path to use in a game.
     """
-    ASEB = (1, AsebPathPair.NAME, lambda: AsebPathPair())
     BELL = (1, BellPathPair.NAME, lambda: BellPathPair())
-    MASTERS = (1, MastersPathPair.NAME, lambda: MastersPathPair())
-    MURRAY = (1, MurrayPathPair.NAME, lambda: MurrayPathPair())
-    SKIRIUK = (1, SkiriukPathPair.NAME, lambda: SkiriukPathPair())
+    ASEB = (2, AsebPathPair.NAME, lambda: AsebPathPair())
+    MASTERS = (3, MastersPathPair.NAME, lambda: MastersPathPair())
+    MURRAY = (4, MurrayPathPair.NAME, lambda: MurrayPathPair())
+    SKIRIUK = (5, SkiriukPathPair.NAME, lambda: SkiriukPathPair())
 
     def __init__(self, value: int, name: str, create_path_pair: callable[[], PathPair]):
         self._value_ = value
@@ -635,5 +639,88 @@ class AsebBoardShape(BoardShape):
     4 tiles, the second row contains 12 tiles, and the third
     also contains 4 tiles.
     """
-    pass
+
+    NAME: str = "Aseb"
+    """
+    The name given to this board shape.
+    """
+
+    BOARD_TILES: set[Tile] = set(AsebPathPair.LIGHT_PATH).union(set(AsebPathPair.DARK_PATH))
+    """
+    The set of all tiles that exist on the board.
+    """
+
+    ROSETTE_TILES: set[Tile] = {
+        Tile(1, 1),
+        Tile(3, 1),
+        Tile(2, 4),
+        Tile(2, 8),
+        Tile(2, 12)
+    }
+    """
+    The set of rosette tiles that exist on the board.
+    """
+
+    def __init__(self):
+        super().__init__(
+            AsebBoardShape.NAME,
+            AsebBoardShape.BOARD_TILES,
+            AsebBoardShape.ROSETTE_TILES
+        )
+
+
+class StandardBoardShape(BoardShape):
+    """
+    The standard shape of board used for The Royal Game of Ur that
+    follows the game boards that were excavated by Sir Leonard Woolley.
+    """
+
+    NAME: str = "Standard"
+    """
+    The name given to this board shape.
+    """
+
+    BOARD_TILES: set[Tile] = set(BellPathPair.LIGHT_PATH).union(set(BellPathPair.DARK_PATH))
+    """
+    The set of all tiles that exist on the board.
+    """
+
+    ROSETTE_TILES: set[Tile] = {
+        Tile(1, 1),
+        Tile(3, 1),
+        Tile(2, 4),
+        Tile(1, 7),
+        Tile(3, 7)
+    }
+    """
+    The set of rosette tiles that exist on the board.
+    """
+
+    def __init__(self):
+        super().__init__(
+            StandardBoardShape.NAME,
+            StandardBoardShape.BOARD_TILES,
+            StandardBoardShape.ROSETTE_TILES
+        )
+
+
+class BoardType(Enum):
+    """
+    The type of board to use in a game.
+    """
+
+    STANDARD = (1, StandardBoardShape.NAME, lambda: StandardBoardShape())
+    """
+    The standard board shape.
+    """
+
+    ASEB = (2, AsebBoardShape.NAME, lambda: AsebBoardShape())
+    """
+    The Aseb board shape.
+    """
+
+    def __init__(self, value: int, name: str, create_board_shape: callable[[], BoardShape]):
+        self._value_ = value
+        self.name = name
+        self.create_board_shape = create_board_shape
 
