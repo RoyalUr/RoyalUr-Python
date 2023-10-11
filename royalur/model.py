@@ -919,3 +919,24 @@ class BinaryDice0AsMax(BinaryDice):
         return Roll(value)
 
 
+class DiceType(Enum):
+    """
+    The type of dice to use in a game.
+    """
+
+    FOUR_BINARY = (1, "FourBinary", lambda: BinaryDice("FourBinary", 4))
+    """
+    The standard board shape.
+    """
+
+    THREE_BINARY_0MAX = (2, "ThreeBinary0Max", lambda: BinaryDice0AsMax("ThreeBinary0Max", 3))
+    """
+    The Aseb board shape.
+    """
+
+    def __init__(self, value: int, name: str, create_dice: callable[[], Dice]):
+        self._value_ = value
+        self.name = name
+        self.create_dice = create_dice
+
+
