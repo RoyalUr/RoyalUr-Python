@@ -540,11 +540,31 @@ class PathType(Enum):
     """
     The type of path to use in a game.
     """
+
     BELL = (1, BellPathPair.NAME, lambda: BellPathPair())
+    """
+    The path proposed by Bell for the Royal Game of Ur.
+    """
+
     ASEB = (2, AsebPathPair.NAME, lambda: AsebPathPair())
+    """
+    The standard path used for Aseb.
+    """
+
     MASTERS = (3, MastersPathPair.NAME, lambda: MastersPathPair())
+    """
+    The path proposed by Masters for the Royal Game of Ur.
+    """
+
     MURRAY = (4, MurrayPathPair.NAME, lambda: MurrayPathPair())
+    """
+    The path proposed by Murray for the Royal Game of Ur.
+    """
+
     SKIRIUK = (5, SkiriukPathPair.NAME, lambda: SkiriukPathPair())
+    """
+    The path proposed by Skiriuk for the Royal Game of Ur.
+    """
 
     def __init__(self, value: int, name: str, create_path_pair: callable[[], PathPair]):
         self._value_ = value
@@ -897,4 +917,5 @@ class BinaryDice0AsMax(BinaryDice):
             raise ValueError(f"This dice cannot roll {value}");
 
         return Roll(value)
+
 
