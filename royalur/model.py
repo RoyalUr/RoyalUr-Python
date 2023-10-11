@@ -159,6 +159,47 @@ class Tile:
         return path
 
 
+class Piece:
+    """
+    A piece on a board.
+    """
+
+    owner: PlayerType
+    """
+    The player that owns this piece.
+    """
+
+    path_index: int
+    """
+    The index of the piece on its owner player's path.
+    """
+
+    def __init__(self, owner: PlayerType, path_index: int) -> None:
+        if path_index < 0:
+            raise ValueError(f"The path index cannot be negative: {path_index}")
+
+        self.owner = owner
+        self.path_index = path_index
+
+    def __hash__(self) -> int:
+        return hash(self.owner) ^ (101 * hash(self.path_index))
+
+    def __eq__(self, other: object) -> bool:
+        if type(other) is not type(self):
+            return False
+
+        return self.owner == other.owner \
+            and self.path_index == other.path_index
+
+    @staticmethod
+    def to_char(piece: Optional['Piece']) -> str:
+        """
+        Converts the given piece to a single character that can be used
+        to textually represent the owner of a piece.
+        """
+        return PlayerType.to_char(piece.owner if piece is not None else None)
+
+
 class PathPair:
     """
     Represents a pair of paths for the light and dark players to
@@ -940,44 +981,3 @@ class DiceType(Enum):
         self._value_ = value
         self.name = name
         self.create_dice = create_dice
-
-
-class Piece:
-    """
-    A piece on a board.
-    """
-
-    owner: PlayerType
-    """
-    The player that owns this piece.
-    """
-
-    path_index: int
-    """
-    The index of the piece on its owner player's path.
-    """
-
-    def __init__(self, owner: PlayerType, path_index: int) -> None:
-        if path_index < 0:
-            raise ValueError(f"The path index cannot be negative: {path_index}")
-
-        self.owner = owner
-        self.path_index = path_index
-
-    def __hash__(self) -> int:
-        return hash(self.owner) ^ (101 * hash(self.path_index))
-
-    def __eq__(self, other: object) -> bool:
-        if type(other) is not type(self):
-            return False
-
-        return self.owner == other.owner \
-            and self.path_index == other.path_index
-
-    @staticmethod
-    def to_char(piece: Optional['Piece']) -> str:
-        """
-        Converts the given piece to a single character that can be used
-        to textually represent the owner of a piece.
-        """
-        return PlayerType.to_char(piece.owner if piece is not None else None)
