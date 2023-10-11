@@ -864,3 +864,37 @@ class BinaryDice(Dice):
 
         return Roll(value)
 
+
+class BinaryDice0AsMax(BinaryDice):
+    """
+    A set of binary dice where a roll of zero actually represents
+    the highest roll possible, rather than the lowest.
+    """
+
+    max_roll_value: int
+
+    def __init__(self, name: str, num_die: int):
+        super().__init__(name, num_die)
+        self.max_roll_value = num_die + 1
+        self.roll_probabilities = [
+            0,
+            *self.roll_probabilities[1:],
+            self.roll_probabilities[0]
+        ]
+
+    @overrides
+    def get_max_roll_value(self) -> int:
+        return self.max_roll_value
+
+    @overrides
+    def roll_value(self) -> int:
+        value = super().roll_value()
+        return self.max_roll_value if value == 0 else value
+
+    @overrides
+    def generate_roll(self, value: int) -> Roll:
+        if value <= 0 or value > self.max_roll_value:
+            raise ValueError(f"This dice cannot roll {value}");
+
+        return Roll(value)
+
