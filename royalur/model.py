@@ -108,8 +108,9 @@ class Tile:
         return hash((self.x, self.y))
 
     def __eq__(self, other: object) -> bool:
-        if not isinstance(other, Tile):
+        if type(other) is not type(self):
             return False
+
         return self.x == other.x and self.y == other.y
 
     def __repr__(self) -> str:
@@ -285,8 +286,9 @@ class PathPair:
         return self.light == other.light
 
     def __eq__(self, other: object) -> bool:
-        if not isinstance(other, PathPair):
+        if type(other) is not type(self):
             return False
+
         return self.name == other.name \
             and self.lightWithStartEnd == other.lightWithStartEnd \
             and self.darkWithStartEnd == other.darkWithStartEnd
@@ -650,7 +652,7 @@ class BoardShape:
         return self.tiles == other.tiles and self.rosettes == other.rosettes
 
     def __eq__(self, other: 'BoardShape') -> bool:
-        if not isinstance(other, BoardShape):
+        if type(other) is not type(self):
             return False
         return self.is_equivalent(other) and self.name == other.name
 
@@ -966,10 +968,11 @@ class Piece:
         return hash(self.owner) ^ (101 * hash(self.path_index))
 
     def __eq__(self, other: object) -> bool:
-        if type(other) is not Piece:
+        if type(other) is not type(self):
             return False
 
-        return self.owner == other.owner and self.path_index == other.path_index
+        return self.owner == other.owner \
+            and self.path_index == other.path_index
 
     @staticmethod
     def to_char(piece: Optional['Piece']) -> str:
