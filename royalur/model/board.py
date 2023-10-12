@@ -1,6 +1,7 @@
-from .model import Tile, PlayerType
+from .tile import Tile
+from .player import PlayerType
 from .shape import BoardShape
-from typing import Optional
+from typing import Optional, Union
 
 
 class Piece:
@@ -60,6 +61,177 @@ class Piece:
         to textually represent the owner of a piece.
         """
         return PlayerType.to_char(piece.owner if piece is not None else None)
+
+
+class Board:
+    """
+    Stores the placement of pieces on the tiles of a Royal Game of Ur board.
+    """
+    __slots__ = ("_shape", "_width", "_height", "_pieces")
+
+    _shape: BoardShape
+    _width: int
+    _height: int
+    _pieces: list[Optional[Piece]]
+
+    def __init__(
+            self, board_or_shape: Union[BoardShape, 'Board']
+    ):
+        if isinstance(board_or_shape, BoardShape):
+            shape = board_or_shape
+        else:
+            shape = board_or_shape.shape
+
+        self._shape = shape
+        self._width = shape.width
+        self._height = shape.height
+
+        if isinstance(board_or_shape, Board):
+            self._pieces = [*board_or_shape._pieces]
+        else:
+            self._pieces = [None for _ in range(self._width * self._height)]
+
+    def _calc_tile_index(self, ix: int, iy: int) -> int:
+        """
+        We use a 1d array for storing pieces. This converts
+        from 2d indices into an index to access that 1d array.
+        """
+        if ix < 0 or iy < 0 or ix >= self._width or iy >= self._height:
+            raise ValueError(f"There is no tile at the indices ({ix}, {iy})")
+
+        return iy * self._width + ix
+
+    @property
+    def shape(self) -> BoardShape:
+        """
+        The shape of this board.
+        """
+        return self._shape
+
+    @property
+    def width(self) -> int:
+        """
+        The width of this board.
+        """
+        return self._width
+
+    @property
+    def height(self) -> int:
+        """
+        The height of this board.
+        """
+        return self._height
+
+    def contains(self, tile: Tile) -> bool:
+        """
+        Determines whether the given tile falls within the bounds of this board.
+        """
+        return self._shape.contains(tile)
+
+    def contains_indices(self, ix: int, iy: int) -> bool:
+        """
+        Determines whether the tile at the indices (ix, iy),
+        0-based, falls within the bounds of this board.
+        """
+        return self._shape.contains_indices(ix, iy)
+
+    def get(self, tile: Tile) -> Optional[Piece]:
+        """
+        Gets the piece on the given tile. Returns None if there
+        is no piece on the tile.
+        """
+        if not self._shape.contains(tile):
+            raise ValueError(f"There is no tile at {tile}")
+
+        index = self._calc_tile_index(tile.ix, tile.iy)
+        return self._pieces[index]
+
+    def get_by_indices(self, ix: int, iy: int) -> Optional[Piece]:
+        """
+        Gets the piece on the tile at the indices (ix, iy), 0-based.
+        Returns None if there is no piece on the tile.
+        """
+        if not self._shape.contains_indices(ix, iy):
+            raise ValueError(f"There is no tile at the indices ({ix}, {iy})")
+
+        index = self._calc_tile_index(ix, iy)
+        return self._pieces[index]
+
+    def set(self, tile: Tile, piece: Optional[Piece]) -> Optional[Piece]:
+        """
+        Sets the piece on the given tile to the provided piece. If the provided
+        piece is None, it removes any piece on the tile. Returns the piece
+        that was previously on the tile, or None if there was no
+        piece on the tile.
+        """
+        if not self._shape.contains(tile):
+            raise ValueError(f"There is no tile at {tile}")
+
+        index = self._calc_tile_index(tile.ix, tile.iy)
+        previous = self._pieces[index]
+        self._pieces[index] = piece
+        return previous
+
+    def set_by_indices(self, ix: int, iy: int, piece: Optional[Piece]) -> Optional[Piece]:
+        """
+        Sets the piece on the tile at the indices (ix, iy), 0-based,
+        to the provided piece. If the provided piece is None, it removes
+        any piece on the tile. Returns the piece that was previously
+        on the tile, or None if there was no piece on the tile.
+        """
+        if not self._shape.contains_indices(ix, iy):
+            raise ValueError(f"There is no tile at the indices ({ix}, {iy})")
+
+        index = self._calc_tile_index(ix, iy)
+        previous = self._pieces[index]
+        self._pieces[index] = piece
+        return previous
+
+    def clear(self):
+        """
+        Removes all pieces from this board.
+        """
+        for index in range(len(self._pieces)):
+            self._pieces[index] = None
+
+    def count_pieces(self, player: PlayerType) -> int:
+        """
+        Counts the number of pieces that are on the board for the given player.
+        """
+        piece_count = 0
+        for piece in self._pieces:
+            if piece is not None and piece.owner == player:
+                piece_count += 1
+
+        return piece_count
+
+    def __eq__(self, other: object) -> bool:
+        if type(other) is not type(self):
+            return False
+
+        return self._shape == other._shape and self._pieces == other._pieces
+
+    def to_string(self, column_delimiter: str = "\n", include_off_board_tiles: bool = True):
+        """
+        Writes the contents of this board into a String, where each column is separated by a delimiter.
+        """
+        builder = []
+        for ix in range(self._width):
+            if ix > 0:
+                builder.append(column_delimiter)
+
+            for iy in range(self._height):
+                if self._shape.contains_indices(ix, iy):
+                    piece = self.get_by_indices(ix, iy)
+                    builder.append(Piece.to_char(piece))
+
+                elif include_off_board_tiles:
+                    builder.append(" ")
+
+        return "".join(builder)
+
+    def __repr__(self) -> str:
+        return self.to_string()
 
 
 class Move:
