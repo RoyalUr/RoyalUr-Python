@@ -1,9 +1,5 @@
 """
-This package contains the source code for RoyalUr.
+This package contains the RoyalUr library.
 """
 
-from .model import PlayerType, Tile
-from .path import PathPair, PathType
-from .shape import BoardShape, BoardType
-from .board import Piece, Move
-from .dice import Dice, DiceType
+from .model import PlayerType, Tile, PathPair, PathType, BoardShape, BoardType, Dice, DiceType
