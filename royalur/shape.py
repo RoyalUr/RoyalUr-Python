@@ -8,11 +8,13 @@ class BoardShape:
     """
     Holds the shape of a board as a grid, and includes the location of all rosette tiles.
     """
-    name: str
-    tiles: set[Tile]
-    rosettes: set[Tile]
-    width: int
-    height: int
+    __slots__ = ("_name", "_tiles", "_rosettes", "_width", "_height")
+
+    _name: str
+    _tiles: set[Tile]
+    _rosettes: set[Tile]
+    _width: int
+    _height: int
 
     def __init__(
             self,
@@ -28,12 +30,12 @@ class BoardShape:
             if rosette not in tiles:
                 raise ValueError(f"Rosette at {rosette} does not exist on the board")
 
-        self.name = name
-        self.tiles = tiles
-        self.rosettes = rosettes
+        self._name = name
+        self._tiles = tiles
+        self._rosettes = rosettes
 
-        x_values = [tile.x for tile in tiles]
-        y_values = [tile.y for tile in tiles]
+        x_values = [tile._x for tile in tiles]
+        y_values = [tile._y for tile in tiles]
 
         min_x = min(x_values)
         min_y = min(y_values)
@@ -44,32 +46,87 @@ class BoardShape:
                 f"Minimum X = {min_x}, Minimum Y = {min_y}"
             )
 
-        self.width = max(x_values)
-        self.height = max(y_values)
+        self._width = max(x_values)
+        self._height = max(y_values)
+
+    @property
+    def name(self) -> str:
+        """
+        The name of this board shape.
+        """
+        return self._name
+
+    @property
+    def tiles(self) -> set[Tile]:
+        """
+        The set of tiles that fall within the bounds of this board shape.
+        """
+        return self._tiles
+
+    @property
+    def rosettes(self) -> set[Tile]:
+        """
+        The set of tiles that represent rosette tiles in this board shape.
+        """
+        return self._rosettes
+
+    @property
+    def width(self) -> int:
+        """
+        The number of x-coordinates that exist in this board shape.
+        """
+        return self._width
+
+    @property
+    def height(self) -> int:
+        """
+        The number of y-coordinates that exist in this board shape.
+        """
+        return self._height
 
     @property
     def area(self) -> int:
-        return self.width * self.height
+        """
+        The number of tiles contained in this board shape.
+        """
+        return len(self._tiles)
 
     def contains(self, tile: Tile) -> bool:
-        return tile in self.tiles
+        """
+        Determines whether the given tile falls within this board shape.
+        """
+        return tile in self._tiles
 
     def contains_indices(self, ix: int, iy: int) -> bool:
-        if ix < 0 or iy < 0 or ix >= self.width or iy >= self.height:
+        """
+        Determines whether the tile at indices (ix, iy), 0-based,
+        falls within the bounds of this shape of board.
+        """
+        if ix < 0 or iy < 0 or ix >= self._width or iy >= self._height:
             return False
         return self.contains(Tile.from_indices(ix, iy))
 
     def contains_all(self, tiles: Iterable[Tile]) -> bool:
+        """
+        Determines whether all provided tiles fall within this board shape.
+        """
         for tile in tiles:
             if not self.contains(tile):
                 return False
         return True
 
     def is_rosette(self, tile: Tile) -> bool:
-        return tile in self.rosettes
+        """
+        Determines whether the given tile is a rosette tile in this board shape.
+        """
+        return tile in self._rosettes
 
     def is_rosette_indices(self, ix: int, iy: int) -> bool:
-        if ix < 0 or iy < 0 or ix >= self.width or iy >= self.height:
+        """
+        Determines whether the tile at the indices (ix, iy), 0-based,
+        is a rosette tile in this board shape.
+        """
+        if ix < 0 or iy < 0 or ix >= self._width or iy >= self._height:
             return False
         return self.isRosette(Tile.from_indices(ix, iy))
 
@@ -79,12 +136,12 @@ class BoardShape:
         and has the same rosettes, as other. This does not check
         that the names of the board shapes are the same.
         """
-        return self.tiles == other.tiles and self.rosettes == other.rosettes
+        return self._tiles == other._tiles and self._rosettes == other._rosettes
 
     def __eq__(self, other: 'BoardShape') -> bool:
         if type(other) is not type(self):
             return False
-        return self.is_equivalent(other) and self.name == other.name
+        return self.is_equivalent(other) and self._name == other._name
 
 
 class AsebBoardShape(BoardShape):
@@ -94,6 +151,7 @@ class AsebBoardShape(BoardShape):
     4 tiles, the second row contains 12 tiles, and the third
     also contains 4 tiles.
     """
+    __slots__ = ()
 
     NAME: str = "Aseb"
     """
@@ -129,6 +187,7 @@ class StandardBoardShape(BoardShape):
     The standard shape of board used for The Royal Game of Ur that
     follows the game boards that were excavated by Sir Leonard Woolley.
     """
+    __slots__ = ()
 
     NAME: str = "Standard"
     """
@@ -174,7 +233,20 @@ class BoardType(Enum):
     The Aseb board shape.
     """
 
-    def __init__(self, value: int, name: str, create_board_shape: callable[[], BoardShape]):
+    def __init__(self, value: int, display_name: str, create_board_shape: callable[[], BoardShape]):
         self._value_ = value
-        self.name = name
-        self.create_board_shape = create_board_shape
+        self._display_name = display_name
+        self._create_board_shape = create_board_shape
+
+    @property
+    def display_name(self) -> str:
+        """
+        The name of this board shape.
+        """
+        return self._display_name
+
+    def create_board_shape(self) -> BoardShape:
+        """
+        Create an instance of the board shape.
+        """
+        return self._create_board_shape()

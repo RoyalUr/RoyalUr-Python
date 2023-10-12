@@ -9,27 +9,38 @@ class Roll:
     A roll of the dice.
     """
 
-    value: int
-    """
-    The value of the dice that was rolled.
-    """
+    __slots__ = ("_value",)
+
+    _value: int
 
     def __init__(self, value: int):
-        self.value = value
+        self._value = value
+
+    @property
+    def value(self) -> int:
+        """
+        The value of the dice that was rolled.
+        """
+        return self._value
 
 
 class Dice(ABC):
     """
     A generator of dice rolls.
     """
+    __slots__ = ("_name",)
 
-    name: str
-    """
-    The name of this dice.
-    """
+    _name: str
 
     def __init__(self, name: str):
-        self.name = name
+        self._name = name
+
+    @property
+    def name(self) -> str:
+        """
+        The name of this dice.
+        """
+        return self._name
 
     def has_state() -> bool:
         """
@@ -92,41 +103,42 @@ class BinaryDice(Dice):
     """
     Rolls a number of binary die and counts the result.
     """
+    __slots__ = ("_num_die", "_roll_probabilities")
 
-    num_die: int
-    """
-    The number of binary dice to roll.
-    """
-
-    roll_probabilities: list[float]
-    """
-    The probability of rolling each value with these dice.
-    """
+    _num_die: int
+    _roll_probabilities: list[float]
 
     def __init__(self, name: str, num_die: int):
         super().__init__(name)
-        self.num_die = num_die
-        self.roll_probabilities = []
+        self._num_die = num_die
+        self._roll_probabilities = []
 
         # Binomial Distribution
         baseProb = 0.5 ** num_die
         nChooseK = 1
         for roll in range(0, num_die + 1):
-            self.roll_probabilities.append(baseProb * nChooseK)
+            self._roll_probabilities.append(baseProb * nChooseK)
             nChooseK = nChooseK * (num_die - roll) // (roll + 1)
+
+    @property
+    def num_die(self) -> int:
+        """
+        The number of binary dice to roll.
+        """
+        return self._num_die
 
     @overrides
     def get_max_roll_value(self) -> int:
-        return self.num_die
+        return self._num_die
 
     @overrides
     def get_roll_probabilities(self) -> list[float]:
-        return self.roll_probabilities
+        return self._roll_probabilities
 
     @overrides
     def roll_value(self) -> int:
         value = 0
-        for _ in range(self.num_die):
+        for _ in range(self._num_die):
             # Simulate rolling a single D2 dice.
             if random.random() >= 0.5:
                 value += 1
@@ -135,7 +147,7 @@ class BinaryDice(Dice):
 
     @overrides
     def generate_roll(self, value: int) -> Roll:
-        if value < 0 or value > self.num_die:
+        if value < 0 or value > self._num_die:
             raise ValueError(f"This dice cannot roll {value}");
 
         return Roll(value)
@@ -146,16 +158,17 @@ class BinaryDice0AsMax(BinaryDice):
     A set of binary dice where a roll of zero actually represents
     the highest roll possible, rather than the lowest.
     """
+    __slots__ = ("_max_roll_value",)
 
-    max_roll_value: int
+    _max_roll_value: int
 
     def __init__(self, name: str, num_die: int):
         super().__init__(name, num_die)
-        self.max_roll_value = num_die + 1
-        self.roll_probabilities = [
+        self._max_roll_value = num_die + 1
+        self._roll_probabilities = [
             0,
-            *self.roll_probabilities[1:],
-            self.roll_probabilities[0]
+            *self._roll_probabilities[1:],
+            self._roll_probabilities[0]
         ]
 
     @overrides
@@ -190,7 +203,20 @@ class DiceType(Enum):
     The Aseb board shape.
     """
 
-    def __init__(self, value: int, name: str, create_dice: callable[[], Dice]):
+    def __init__(self, value: int, display_name: str, create_dice: callable[[], Dice]):
         self._value_ = value
-        self.name = name
-        self.create_dice = create_dice
+        self._display_name = display_name
+        self._create_dice = create_dice
+
+    @property
+    def display_name(self) -> str:
+        """
+        The name of this dice.
+        """
+        return self._display_name
+
+    def create_dice(self) -> Dice:
+        """
+        Creates a set of these dice.
+        """
+        return self._create_dice()

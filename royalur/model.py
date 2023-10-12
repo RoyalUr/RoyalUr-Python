@@ -16,10 +16,24 @@ class PlayerType(Enum):
     The dark player.
     """
 
-    def __init__(self, value: int, name: str, character: str):
+    def __init__(self, value: int, display_name: str, character: str):
         self._value_ = value
-        self.name = name
-        self.character = character
+        self._display_name = display_name
+        self._character = character
+
+    @property
+    def display_name(self) -> str:
+        """
+        The name of this player.
+        """
+        return self._display_name
+
+    @property
+    def character(self) -> str:
+        """
+        The character used to represent this player in shorthand notations.
+        """
+        return self._character
 
     def get_other_player(self) -> 'PlayerType':
         """
@@ -35,7 +49,8 @@ class PlayerType(Enum):
     @staticmethod
     def to_char(player: Optional['PlayerType']) -> str:
         """
-        Convert the player to a single character.
+        Convert the player to a single character used to represent the
+        player in shorthand notations.
         """
         return player.character if player else '.'
 
@@ -44,26 +59,12 @@ class Tile:
     """
     Represents a position on or off the board.
     """
+    __slots__ = ("_x", "_y", "_ix", "_iy")
 
-    x: int
-    """
-    The x-coordinate of the tile. This coordinate is 1-based.
-    """
-
-    y: int
-    """
-    The y-coordinate of the tile. This coordinate is 1-based.
-    """
-
-    ix: int
-    """
-    The x-index of the tile. This coordinate is 0-based.
-    """
-
-    iy: int
-    """
-    The y-index of the tile. This coordinate is 0-based.
-    """
+    _x: int
+    _y: int
+    _ix: int
+    _iy: int
 
     def __init__(self, x: int, y: int):
         if x < 1 or x > 26:
@@ -71,10 +72,38 @@ class Tile:
         if y < 0:
             raise ValueError(f"y must not be negative. Invalid value: {y}");
 
-        self.x = x
-        self.y = y
-        self.ix = x - 1
-        self.iy = y - 1
+        self._x = x
+        self._y = y
+        self._ix = x - 1
+        self._iy = y - 1
+
+    @property
+    def x(self) -> int:
+        """
+        The x-coordinate of the tile. This coordinate is 1-based.
+        """
+        return self._x
+
+    @property
+    def y(self) -> int:
+        """
+        The y-coordinate of the tile. This coordinate is 1-based.
+        """
+        return self._y
+
+    @property
+    def ix(self) -> int:
+        """
+        The x-index of the tile. This coordinate is 0-based.
+        """
+        return self._ix
+
+    @property
+    def iy(self) -> int:
+        """
+        The y-index of the tile. This coordinate is 0-based.
+        """
+        return self._iy
 
     @staticmethod
     def from_indices(ix: int, iy: int) -> 'Tile':
@@ -88,29 +117,29 @@ class Tile:
         """
         Takes a unit length step towards the other tile.
         """
-        dx = other.x - self.x
-        dy = other.y - self.y
+        dx = other._x - self._x
+        dy = other._y - self._y
 
         if abs(dx) + abs(dy) <= 1:
             return other
 
         if abs(dx) < abs(dy):
-            return Tile(self.x, self.y + (1 if dy > 0 else -1))
+            return Tile(self._x, self._y + (1 if dy > 0 else -1))
         else:
-            return Tile(self.x + (1 if dx > 0 else -1), self.y)
+            return Tile(self._x + (1 if dx > 0 else -1), self._y)
 
     def __hash__(self) -> int:
-        return hash((self.x, self.y))
+        return hash((self._x, self._y))
 
     def __eq__(self, other: object) -> bool:
         if type(other) is not type(self):
             return False
 
-        return self.x == other.x and self.y == other.y
+        return self._x == other._x and self._y == other._y
 
     def __repr__(self) -> str:
-        encoded_x = chr(self.x + (ord('A') - 1))
-        return f"{encoded_x}{self.y}"
+        encoded_x = chr(self._x + (ord('A') - 1))
+        return f"{encoded_x}{self._y}"
 
     def __str__(self) -> str:
         return repr(self)
