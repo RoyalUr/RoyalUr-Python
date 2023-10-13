@@ -4,7 +4,7 @@ of games of the Royal Game of Ur.
 """
 
 from .tile import Tile
-from .player import PlayerType
+from .player import PlayerType, PlayerState
 from .path import (
     PathPair, PathType,
     AsebPathPair, BellPathPair,

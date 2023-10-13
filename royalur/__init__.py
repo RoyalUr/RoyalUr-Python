@@ -2,4 +2,12 @@
 This package contains the RoyalUr library.
 """
 
-from .model import PlayerType, Tile, PathPair, PathType, BoardShape, BoardType, Dice, DiceType
+from .model import (
+    Tile,
+    PlayerType, PlayerState,
+    PathPair, PathType,
+    BoardShape, BoardType,
+    Piece, Move, Board,
+    Dice, DiceType,
+    GameSettings
+)

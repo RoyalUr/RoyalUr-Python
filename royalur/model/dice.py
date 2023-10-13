@@ -215,6 +215,13 @@ class DiceType(Enum):
         """
         return self._display_name
 
+    @property
+    def dice_factory(self) -> callable[[], Dice]:
+        """
+        The factory that is used to produce this type of dice.
+        """
+        return self._create_dice
+
     def create_dice(self) -> Dice:
         """
         Creates a set of these dice.

@@ -1,4 +1,4 @@
-from .model import Tile, PlayerType
+from .player import Tile, PlayerType
 from enum import Enum
 
 
