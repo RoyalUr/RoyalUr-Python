@@ -15,8 +15,9 @@ from .shape import (
     BoardShape, BoardType,
     StandardBoardShape, AsebBoardShape,
 )
-from .board import Piece, Move
+from .board import Piece, Move, Board
 from .dice import (
     Dice, DiceType,
     BinaryDice, BinaryDice0AsMax,
 )
+from .settings import GameSettings
