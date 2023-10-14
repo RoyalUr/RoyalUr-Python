@@ -17,7 +17,7 @@ from .shape import (
 )
 from .board import Piece, Move, Board
 from .dice import (
-    Dice, DiceType,
+    Roll, Dice, DiceType,
     BinaryDice, BinaryDice0AsMax,
 )
 from .settings import GameSettings
