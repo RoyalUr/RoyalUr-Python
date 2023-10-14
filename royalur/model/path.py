@@ -426,17 +426,17 @@ class PathType(Enum):
     The path proposed by Skiriuk for the Royal Game of Ur.
     """
 
-    def __init__(self, value: int, display_name: str, create_path_pair: callable[[], PathPair]):
+    def __init__(self, value: int, text_name: str, create_path_pair: callable[[], PathPair]):
         self._value_ = value
-        self._display_name = display_name
+        self._text_name = text_name
         self._create_path_pair = create_path_pair
 
     @property
-    def display_name(self) -> str:
+    def text_name(self) -> str:
         """
         The name of these paths.
         """
-        return self._display_name
+        return self._text_name
 
     def create_path_pair(self) -> PathPair:
         """

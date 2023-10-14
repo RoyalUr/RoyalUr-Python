@@ -203,17 +203,17 @@ class DiceType(Enum):
     The Aseb board shape.
     """
 
-    def __init__(self, value: int, display_name: str, create_dice: callable[[], Dice]):
+    def __init__(self, value: int, text_name: str, create_dice: callable[[], Dice]):
         self._value_ = value
-        self._display_name = display_name
+        self._text_name = text_name
         self._create_dice = create_dice
 
     @property
-    def display_name(self) -> str:
+    def text_name(self) -> str:
         """
         The name of this dice.
         """
-        return self._display_name
+        return self._text_name
 
     @property
     def dice_factory(self) -> callable[[], Dice]:

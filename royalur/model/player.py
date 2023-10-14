@@ -16,17 +16,17 @@ class PlayerType(Enum):
     The dark player.
     """
 
-    def __init__(self, value: int, display_name: str, character: str):
+    def __init__(self, value: int, text_name: str, character: str):
         self._value_ = value
-        self._display_name = display_name
+        self._text_name = text_name
         self._character = character
 
     @property
-    def display_name(self) -> str:
+    def text_name(self) -> str:
         """
         The name of this player.
         """
-        return self._display_name
+        return self._text_name
 
     @property
     def character(self) -> str:
