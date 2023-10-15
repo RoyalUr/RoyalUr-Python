@@ -91,6 +91,12 @@ class Board:
         else:
             self._pieces = [None for _ in range(self._width * self._height)]
 
+    def copy(self) -> 'Board':
+        """
+        Creates an exact copy of this board.
+        """
+        return Board(self)
+
     def _calc_tile_index(self, ix: int, iy: int) -> int:
         """
         We use a 1d array for storing pieces. This converts
@@ -407,9 +413,14 @@ class Move:
 
         return self._captured_piece
 
-    def apply(self):
-        # TODO : Need a Board implementation first
-        pass
+    def apply(self, board: Board):
+        """
+        Apply this move to update the given board.
+        """
+        if self.source is not None:
+            board.set(self.source, None)
+        if self.dest is not None:
+            board.set(self.dest, self.dest_piece)
 
     def describe(self) -> str:
         """
