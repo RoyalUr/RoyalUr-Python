@@ -21,3 +21,4 @@ from .dice import (
     BinaryDice, BinaryDice0AsMax,
 )
 from .settings import GameSettings
+from .metadata import GameMetadata
