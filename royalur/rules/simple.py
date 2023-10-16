@@ -1,8 +1,10 @@
 from royalur.model import (
-    Board, BoardShape, GameMetadata, GameSettings, Move, PathPair, Piece,
-    Dice, PlayerType, PlayerState, Roll
+    Board, BoardShape, GameMetadata, GameSettings,
+    Move, PathPair, Piece, Dice,
+    PlayerType, PlayerState, Roll
 )
 from royalur.rules.state import (
+    GameState,
     WaitingForRollGameState,
     WaitingForMoveGameState,
     RolledGameState,
@@ -14,8 +16,6 @@ from royalur.rules.rules import (
     RuleSet, RuleSetProvider,
 )
 from overrides import overrides
-
-from royalur.rules.state import GameState
 
 
 class SimplePieceProvider(PieceProvider):
