@@ -92,11 +92,17 @@ class Dice(ABC):
         """
         pass
 
-    def roll(self) -> Roll:
+    def roll(self, value: int | None = None) -> Roll:
         """
-        Generates a random roll using this dice.
+        Generates a roll using this dice. If no value is provided, then the
+        value of the roll will be random.
         """
-        return self.generate_roll(self.roll_value())
+        if value is None:
+            value = self.roll_value()
+        else:
+            self.record_roll(value)
+
+        return self.generate_roll(value)
 
 
 class BinaryDice(Dice):

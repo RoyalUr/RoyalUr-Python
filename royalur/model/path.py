@@ -124,7 +124,7 @@ class PathPair:
         """
         return self.get_with_ends(player)[0]
 
-    def getEnd(self, player: PlayerType) -> list[Tile]:
+    def get_end(self, player: PlayerType) -> list[Tile]:
         """
         Gets the end tile of the given player, which exists off the board.
         """

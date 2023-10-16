@@ -1,6 +1,7 @@
 from .tile import Tile
 from .player import PlayerType
 from .shape import BoardShape
+from .path import PathPair
 from typing import Optional, Union
 
 
@@ -363,12 +364,15 @@ class Move:
         """
         return self._dest is not None and shape.is_rosette(self._dest)
 
-    def get_source(self) -> Tile:
+    def get_source(self, paths: PathPair | None = None) -> Tile:
         """
         Gets the source piece of this move. If there is no source piece, in the
         case where a new piece is moved onto the board, this will throw an error.
         """
         if self._source is None:
+            if paths is not None:
+                return paths.get_start(self._player)
+
             raise RuntimeError("This move has no source, as it is introducing a piece")
 
         return self._source
@@ -383,12 +387,15 @@ class Move:
 
         return self._source_piece
 
-    def get_dest(self) -> Tile:
+    def get_dest(self, paths: PathPair | None = None) -> Tile:
         """
         Gets the destination tile of this move. If there is no destination tile,
         in the case where a piece is moved off the board, this will throw an error.
         """
         if self._dest is None:
+            if paths is not None:
+                return paths.get_end(self._player)
+
             raise RuntimeError("This move has no destination, as it is scoring a piece")
 
         return self._dest
