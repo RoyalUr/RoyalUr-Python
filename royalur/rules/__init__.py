@@ -17,3 +17,7 @@ from .rules import (
     PieceProvider, PlayerStateProvider,
     RuleSet, RuleSetProvider,
 )
+from .simple import (
+    SimplePieceProvider, SimplePlayerStateProvider,
+    SimpleRuleSet, SimpleRuleSetProvider,
+)

@@ -265,13 +265,13 @@ class SimpleRuleSet(RuleSet):
         if move.is_introducing_piece():
             introduced_piece = move.get_dest_piece()
             turn_player = self._player_state_provider.apply_piece_introduced(
-                state, introduced_piece
+                turn_player, introduced_piece
             )
 
         elif move.is_scoring_piece():
             scored_piece = move.get_source_piece()
             turn_player = self._player_state_provider.apply_piece_scored(
-                state, scored_piece
+                turn_player, scored_piece
             )
 
         # Apply the effects of the move to the other player.
@@ -279,7 +279,7 @@ class SimpleRuleSet(RuleSet):
         if move.is_capture():
             captured_piece = move.get_captured_piece()
             other_player = self._player_state_provider.apply_piece_captured(
-                state, captured_piece
+                other_player, captured_piece
             )
 
         # Determine which player is which.

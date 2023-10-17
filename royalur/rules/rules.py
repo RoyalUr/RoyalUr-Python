@@ -102,6 +102,21 @@ class RuleSet(ABC):
         self._player_state_provider = player_state_provider
 
     @property
+    def settings(self) -> GameSettings:
+        """
+        The settings used for this rule set.
+        """
+        return GameSettings(
+            self._board_shape,
+            self._paths,
+            self._dice_factory,
+            self._player_state_provider.get_starting_piece_count(),
+            self.are_rosettes_safe(),
+            self.do_rosettes_grant_extra_rolls(),
+            self.do_captures_grant_extra_rolls()
+        )
+
+    @property
     def board_shape(self) -> BoardShape:
         """
         The shape of the game board.

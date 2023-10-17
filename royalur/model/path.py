@@ -1,4 +1,5 @@
-from .player import Tile, PlayerType
+from .tile import Tile
+from .player import PlayerType
 from enum import Enum
 from typing import Callable
 

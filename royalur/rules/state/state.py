@@ -145,6 +145,14 @@ class WinGameState(GameState):
         super().__init__(board, light_player, dark_player)
         self._winner = winner
 
+    @overrides
+    def is_playable(self) -> bool:
+        return False
+
+    @overrides
+    def is_finished(self) -> bool:
+        return True
+
     def get_winner(self) -> PlayerType:
         """
         Gets the player that won the game.

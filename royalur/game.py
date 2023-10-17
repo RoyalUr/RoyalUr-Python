@@ -46,7 +46,7 @@ class Game:
             states: list[GameState] | None = None
     ):
         if metadata is None:
-            metadata = GameMetadata.create_for_new_game(rules)
+            metadata = GameMetadata.create_for_new_game(rules.settings)
         if states is None:
             states = [rules.generate_initial_game_state()]
 
@@ -382,7 +382,7 @@ class Game:
         """
         Creates a builder to assist in constructing games with custom settings.
         """
-        return GameBuilder(GameSettings.create_finkel(), SimpleRuleSetProvider)
+        return GameBuilder(GameSettings.create_finkel(), SimpleRuleSetProvider())
 
     @staticmethod
     def create(settings: GameSettings):

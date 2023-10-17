@@ -113,7 +113,7 @@ class Tile:
         """
         Constructs a path from waypoints on the board.
         """
-        waypoints = Tile.create_list(coordinates)
+        waypoints = Tile.create_list(*coordinates)
         if len(waypoints) == 0:
             raise ValueError("No coordinates provided")
 

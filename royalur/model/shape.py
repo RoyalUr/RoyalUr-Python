@@ -1,4 +1,4 @@
-from .player import Tile
+from .tile import Tile
 from .path import BellPathPair, AsebPathPair
 from enum import Enum
 from typing import Iterable, Callable

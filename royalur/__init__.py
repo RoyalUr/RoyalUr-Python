@@ -9,5 +9,13 @@ from .model import (
     BoardShape, BoardType,
     Piece, Move, Board,
     Dice, DiceType,
-    GameSettings
+    GameSettings,
+    GameMetadata,
+)
+from .rules import (
+    RuleSet, RuleSetProvider,
+    SimpleRuleSet, SimpleRuleSetProvider,
+)
+from .game import (
+    Game, GameBuilder,
 )
