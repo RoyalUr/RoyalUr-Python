@@ -437,10 +437,10 @@ class Move:
         introducing = self.is_introducing_piece()
 
         if scoring and introducing:
-            return "Introduce and score a piece."
+            return "Introduce and score a piece"
 
         if scoring:
-            return f"Score a piece from {self.get_source()}."
+            return f"Score a piece from {self.get_source()}"
 
         builder = []
         if introducing:
@@ -451,7 +451,7 @@ class Move:
         if self.is_capture():
             builder.append("capture ")
 
-        builder.append(f"{self.get_dest()}.")
+        builder.append(str(self.get_dest()))
         return "".join(builder)
 
     def __hash__(self) -> int:
