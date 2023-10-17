@@ -30,6 +30,8 @@ It is currently on display at the British Museum!
 
 * [Play The Royal Game of Ur on RoyalUr.net.](https://royalur.net/)
 
+* Join us to discuss the game [by joining our Discord.](https://discord.gg/HBP83J4qHV)
+
 
 # 🚀 Example
 
