@@ -95,7 +95,7 @@ created and used instead (e.g., for a new path around the board).
 - Aseb.
 
 <p align="center">
-  <img alt="Supported Board Shapes" height="350" src="docs/BoardShapes.png" />
+  <img alt="Supported Board Shapes" height="350" src="docs/res/board_shapes.png" />
 </p>
 
 **Paths:**
@@ -106,7 +106,7 @@ created and used instead (e.g., for a new path around the board).
 - Aseb path proposed by Murray.
 
 <p align="center">
-  <img alt="Supported Paths" height="350" src="docs/Paths.png" />
+  <img alt="Supported Paths" height="350" src="docs/res/paths.png" />
 </p>
 
 **Dice:**
