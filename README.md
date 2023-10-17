@@ -1,4 +1,6 @@
-![RoyalUr-Python Logo](docs/res/banner.png)
+<p align="center">
+  <img alt="RoyalUr-Python Logo" height="230" src="docs/res/banner.png" />
+</p>
 
 This library provides a Python API for the play and analysis of games of **The Royal Game of Ur**!
 
