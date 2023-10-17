@@ -6,7 +6,8 @@ from typing import Iterable, Callable
 
 class BoardShape:
     """
-    Holds the shape of a board as a grid, and includes the location of all rosette tiles.
+    Holds the shape of a board as a grid, and includes
+    the location of all rosette tiles.
     """
     __slots__ = ("_name", "_tiles", "_rosettes", "_width", "_height")
 
@@ -28,7 +29,9 @@ class BoardShape:
 
         for rosette in rosettes:
             if rosette not in tiles:
-                raise ValueError(f"Rosette at {rosette} does not exist on the board")
+                raise ValueError(
+                    f"Rosette at {rosette} does not exist on the board"
+                )
 
         self._name = name
         self._tiles = tiles
@@ -99,8 +102,8 @@ class BoardShape:
 
     def contains_indices(self, ix: int, iy: int) -> bool:
         """
-        Determines whether the tile at indices (ix, iy), 0-based,
-        falls within the bounds of this shape of board.
+        Determines whether the tile at indices (ix, iy),
+        0-based, falls within the bounds of this shape of board.
         """
         if ix < 0 or iy < 0 or ix >= self._width or iy >= self._height:
             return False
@@ -108,7 +111,8 @@ class BoardShape:
 
     def contains_all(self, tiles: Iterable[Tile]) -> bool:
         """
-        Determines whether all provided tiles fall within this board shape.
+        Determines whether all provided tiles fall
+        within this board shape.
         """
         for tile in tiles:
             if not self.contains(tile):
@@ -117,7 +121,8 @@ class BoardShape:
 
     def is_rosette(self, tile: Tile) -> bool:
         """
-        Determines whether the given tile is a rosette tile in this board shape.
+        Determines whether the given tile is a rosette
+        tile in this board shape.
         """
         return tile in self._rosettes
 
@@ -136,7 +141,8 @@ class BoardShape:
         and has the same rosettes, as other. This does not check
         that the names of the board shapes are the same.
         """
-        return self._tiles == other._tiles and self._rosettes == other._rosettes
+        return self._tiles == other._tiles \
+            and self._rosettes == other._rosettes
 
     def __eq__(self, other: 'BoardShape') -> bool:
         if type(other) is not type(self):
@@ -158,7 +164,10 @@ class AsebBoardShape(BoardShape):
     The name given to this board shape.
     """
 
-    BOARD_TILES: set[Tile] = set(AsebPathPair.LIGHT_PATH[1:-1]).union(set(AsebPathPair.DARK_PATH[1:-1]))
+    BOARD_TILES: set[Tile] = (
+        set(AsebPathPair.LIGHT_PATH[1:-1])
+            .union(set(AsebPathPair.DARK_PATH[1:-1]))
+    )
     """
     The set of all tiles that exist on the board.
     """
@@ -194,7 +203,10 @@ class StandardBoardShape(BoardShape):
     The name given to this board shape.
     """
 
-    BOARD_TILES: set[Tile] = set(BellPathPair.LIGHT_PATH[1:-1]).union(set(BellPathPair.DARK_PATH[1:-1]))
+    BOARD_TILES: set[Tile] = (
+        set(BellPathPair.LIGHT_PATH[1:-1])
+            .union(set(BellPathPair.DARK_PATH[1:-1]))
+    )
     """
     The set of all tiles that exist on the board.
     """
@@ -233,7 +245,12 @@ class BoardType(Enum):
     The Aseb board shape.
     """
 
-    def __init__(self, value: int, text_name: str, create_board_shape: Callable[[], BoardShape]):
+    def __init__(
+            self,
+            value: int,
+            text_name: str,
+            create_board_shape: Callable[[], BoardShape]
+    ):
         self._value_ = value
         self._text_name = text_name
         self._create_board_shape = create_board_shape

@@ -49,16 +49,17 @@ class PlayerType(Enum):
     @staticmethod
     def to_char(player: Optional['PlayerType']) -> str:
         """
-        Convert the player to a single character used to represent the
-        player in shorthand notations.
+        Convert the player to a single character used to
+        represent the player in shorthand notations.
         """
         return player.character if player else '.'
 
 
 class PlayerState:
     """
-    A player state represents the state of a single player at a point in the game.
-    This includes the player's score and number of pieces left to play.
+    A player state represents the state of a single player
+    at a point in the game. This includes the player's score
+    and number of pieces left to play.
     """
     __slots__ = ("_player", "_piece_count", "_score")
 

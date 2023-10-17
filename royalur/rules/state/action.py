@@ -5,8 +5,9 @@ from overrides import overrides
 
 class ActionGameState(OngoingGameState):
     """
-    A game state that is included in the middle of a game to record an action that
-    was taken, but that is not a valid state to be in.
+    A game state that is included in the middle of a
+    game to record an action that was taken, but that
+    is not a valid state to be in.
     """
     __slots__ = ()
 
@@ -47,7 +48,8 @@ class RolledGameState(ActionGameState):
     @property
     def available_moves(self) -> list[Move]:
         """
-        The moves that are available from this position using the given roll.
+        The moves that are available from this position
+        using the given roll.
         """
         return self._available_moves
 

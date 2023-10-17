@@ -13,9 +13,13 @@ class Tile:
 
     def __init__(self, x: int, y: int):
         if x < 1 or x > 26:
-            raise ValueError(f"x must fall within the range [1, 26]. Invalid value: {x}")
+            raise ValueError(
+                f"x must fall within the range [1, 26]. Invalid value: {x}"
+            )
         if y < 0:
-            raise ValueError(f"y must not be negative. Invalid value: {y}");
+            raise ValueError(
+                f"y must not be negative. Invalid value: {y}"
+            );
 
         self._x = x
         self._y = y
@@ -95,7 +99,9 @@ class Tile:
         Decodes the tile coordinates from its encoded text (e.g., A4).
         """
         if len(encoded) < 2:
-            raise ValueError("Incorrect format, expected at least two characters")
+            raise ValueError(
+                "Incorrect format, expected at least two characters"
+            )
 
         x = ord(encoded[0]) - (ord('A') - 1)
         y = int(encoded[1:])

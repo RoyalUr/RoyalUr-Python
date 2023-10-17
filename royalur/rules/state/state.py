@@ -80,7 +80,8 @@ class GameState(ABC):
 
 class OngoingGameState(GameState):
     """
-    A game state from within a game where a winner has not yet been determined.
+    A game state from within a game where a winner has
+    not yet been determined.
     """
     __slots__ = ("_turn",)
 
@@ -115,14 +116,16 @@ class OngoingGameState(GameState):
 
     def get_turn_player(self) -> PlayerState:
         """
-        Gets the state of the player that we are waiting on to interact with the game.
+        Gets the state of the player that we are waiting
+        on to interact with the game.
         """
         return self.get_player(self._turn)
 
     def get_waiting_player(self) -> PlayerState:
         """
-        Gets the state of the player that is waiting whilst the other player makes the
-        next interaction with the game.
+        Gets the state of the player that is waiting whilst
+        the other player makes the next interaction with
+        the game.
         """
         return self.get_player(self.get_waiting())
 

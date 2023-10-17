@@ -16,23 +16,33 @@ class PieceProvider(ABC):
     __slots__ = ()
 
     @abstractmethod
-    def create_introduced(self, owner: PlayerType, new_path_index: int) -> Piece:
+    def create_introduced(
+            self,
+            owner: PlayerType,
+            new_path_index: int
+    ) -> Piece:
         """
         Generates a new piece to be introduced to the board.
         """
         pass
 
     @abstractmethod
-    def create_moved(self, origin_piece: Piece, new_path_index: int) -> Piece:
+    def create_moved(
+            self,
+            origin_piece: Piece,
+            new_path_index: int
+    ) -> Piece:
         """
-        Generates a piece that has been moved from another tile on the board.
+        Generates a piece that has been moved from
+        another tile on the board.
         """
         pass
 
 
 class PlayerStateProvider(ABC):
     """
-    An interface that provides the manipulation of PlayerStates as a game progresses.
+    An interface that provides the manipulation of
+    PlayerStates as a game progresses.
     """
     __slots__ = ()
 
@@ -53,24 +63,26 @@ class PlayerStateProvider(ABC):
     @abstractmethod
     def apply_piece_introduced(self, player_state: PlayerState, piece: Piece):
         """
-        Generates a new player state that is a copy of the given player state,
-        with the given piece introduced to the board.
+        Generates a new player state that is a copy of
+        the given player state, with the given piece
+        introduced to the board.
         """
         pass
 
     @abstractmethod
     def apply_piece_captured(self, player_state: PlayerState, piece: Piece):
         """
-        Generates a new player state that is a copy of the given player state,
-        with the given piece captured.
+        Generates a new player state that is a copy of
+        the given player state, with the given piece
+        captured.
         """
         pass
 
     @abstractmethod
     def apply_piece_scored(self, player_state: PlayerState, piece: Piece):
         """
-        Generates a new player state that is a copy of the given player state,
-        with the given piece scored.
+        Generates a new player state that is a copy of
+        the given player state, with the given piece scored.
         """
         pass
 
@@ -79,7 +91,10 @@ class RuleSet(ABC):
     """
     A set of rules that govern the play of a game of the Royal Game of Ur.
     """
-    __slots__ = ("_board_shape", "_paths", "_dice_factory", "_piece_provider", "_player_state_provider")
+    __slots__ = (
+        "_board_shape", "_paths", "_dice_factory",
+        "_piece_provider", "_player_state_provider",
+    )
 
     _board_shape: BoardShape
     _paths: PathPair
@@ -198,10 +213,12 @@ class RuleSet(ABC):
         roll: Roll,
     ) -> list[GameState]:
         """
-        Applies the given roll to the given state to generate the new state of the
-        game. Multiple game states will be returned to include action game
-        states for maintaining history. However, the latest or highest-index
-        game state will represent the state of the game after the roll was made.
+        Applies the given roll to the given state to generate
+        the new state of the game. Multiple game states will be
+        returned to include action game states for maintaining
+        history. However, the latest or highest-index game
+        state will represent the state of the game after
+        the roll was made.
         """
         pass
 
@@ -212,10 +229,12 @@ class RuleSet(ABC):
         move: Move,
     ) -> list[GameState]:
         """
-        Applies the given move to the given state to generate the new state of
-        the game. Multiple game states may be returned to include action game
-        states for maintaining history. However, the latest or highest-index
-        game state will represent the state of the game after the move was made.
+        Applies the given move to the given state to generate
+        the new state of the game. Multiple game states may be
+        returned to include action game states for maintaining
+        history. However, the latest or highest-index game state
+        will represent the state of the game after the move
+        was made.
 
         This method does not check that the given move is valid.
         """

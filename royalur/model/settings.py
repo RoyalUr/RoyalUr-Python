@@ -12,8 +12,10 @@ class GameSettings:
     rules is desired, then you will need to construct your games manually.
     """
     __slots__ = (
-        "_board_shape", "_paths", "_dice_factory", "_starting_piece_count", "_safe_rosettes",
-        "_rosettes_grant_extra_rolls", "_captures_grant_extra_rolls"
+        "_board_shape", "_paths", "_dice_factory",
+        "_starting_piece_count", "_safe_rosettes",
+        "_rosettes_grant_extra_rolls",
+        "_captures_grant_extra_rolls"
     )
 
     _board_shape: BoardShape
@@ -98,7 +100,10 @@ class GameSettings:
         """
         return self._board_shape
 
-    def with_board_shape(self, board_shape: Union[BoardShape, BoardType]) -> 'GameSettings':
+    def with_board_shape(
+            self,
+            board_shape: Union[BoardShape, BoardType]
+    ) -> 'GameSettings':
         """
         Generates new game settings with a new board shape.
         """
@@ -136,11 +141,15 @@ class GameSettings:
     @property
     def dice(self) -> Callable[[], Dice]:
         """
-        A generator for the dice that should be used to generate dice rolls in games.
+        A generator for the dice that should be used to
+        generate dice rolls in games.
         """
         return self._dice_factory
 
-    def with_dice(self, dice: Union[Callable[[], Dice], DiceType]) -> 'GameSettings':
+    def with_dice(
+            self,
+            dice: Union[Callable[[], Dice], DiceType]
+    ) -> 'GameSettings':
         """
         Generates new game settings with new dice.
         """
@@ -161,7 +170,10 @@ class GameSettings:
         """
         return self._starting_piece_count
 
-    def with_starting_piece_count(self, starting_piece_count: int) -> 'GameSettings':
+    def with_starting_piece_count(
+            self,
+            starting_piece_count: int
+    ) -> 'GameSettings':
         """
         Generates new game settings with a new starting piece count.
         """
@@ -181,7 +193,8 @@ class GameSettings:
 
     def with_safe_rosettes(self, safe_rosettes: bool) -> 'GameSettings':
         """
-        Generates new game settings with a new value for whether rosettes are safe.
+        Generates new game settings with a new value
+        for whether rosettes are safe.
         """
         return GameSettings(
             self._board_shape, self._paths, self._dice_factory,

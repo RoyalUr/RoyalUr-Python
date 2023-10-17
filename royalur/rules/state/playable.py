@@ -50,7 +50,8 @@ class WaitingForMoveGameState(PlayableGameState):
     @property
     def roll(self) -> Roll:
         """
-        The roll that represents the number of places the player can move a piece.
+        The roll that represents the number of places the
+        player can move a piece.
         """
         return self._roll
 

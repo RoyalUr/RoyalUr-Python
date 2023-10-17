@@ -20,13 +20,17 @@ class Piece:
 
         Parameters:
             owner (PlayerType): The player that owns this piece.
-            path_index (int): The index of the piece on its owner's path. Must be non-negative.
+            path_index (int):
+                The index of the piece on its owner's path.
+                Must be non-negative.
 
         Raises:
             ValueError: If the provided path_index is negative.
         """
         if path_index < 0:
-            raise ValueError(f"The path index cannot be negative: {path_index}")
+            raise ValueError(
+                f"The path index cannot be negative: {path_index}"
+            )
 
         self._owner = owner
         self._path_index = path_index
@@ -131,7 +135,8 @@ class Board:
 
     def contains(self, tile: Tile) -> bool:
         """
-        Determines whether the given tile falls within the bounds of this board.
+        Determines whether the given tile falls
+        within the bounds of this board.
         """
         return self._shape.contains(tile)
 
@@ -166,9 +171,9 @@ class Board:
 
     def set(self, tile: Tile, piece: Optional[Piece]) -> Optional[Piece]:
         """
-        Sets the piece on the given tile to the provided piece. If the provided
-        piece is None, it removes any piece on the tile. Returns the piece
-        that was previously on the tile, or None if there was no
+        Sets the piece on the given tile to the provided piece. If the
+        provided piece is None, it removes any piece on the tile. Returns
+        the piece that was previously on the tile, or None if there was no
         piece on the tile.
         """
         if not self._shape.contains(tile):
@@ -179,7 +184,12 @@ class Board:
         self._pieces[index] = piece
         return previous
 
-    def set_by_indices(self, ix: int, iy: int, piece: Optional[Piece]) -> Optional[Piece]:
+    def set_by_indices(
+            self,
+            ix: int,
+            iy: int,
+            piece: Optional[Piece]
+    ) -> Optional[Piece]:
         """
         Sets the piece on the tile at the indices (ix, iy), 0-based,
         to the provided piece. If the provided piece is None, it removes
@@ -203,7 +213,8 @@ class Board:
 
     def count_pieces(self, player: PlayerType) -> int:
         """
-        Counts the number of pieces that are on the board for the given player.
+        Counts the number of pieces that are on the board
+        for the given player.
         """
         piece_count = 0
         for piece in self._pieces:
@@ -216,11 +227,17 @@ class Board:
         if type(other) is not type(self):
             return False
 
-        return self._shape == other._shape and self._pieces == other._pieces
+        return self._shape == other._shape \
+            and self._pieces == other._pieces
 
-    def to_string(self, column_delimiter: str = "\n", include_off_board_tiles: bool = True):
+    def to_string(
+            self,
+            column_delimiter: str = "\n",
+            include_off_board_tiles: bool = True
+    ):
         """
-        Writes the contents of this board into a String, where each column is separated by a delimiter.
+        Writes the contents of this board into a String, where
+        each column is separated by a delimiter.
         """
         builder = []
         for ix in range(self._width):
@@ -267,11 +284,20 @@ class Move:
             captured_piece: Optional[Piece],
     ):
         if (source is None) != (source_piece is None):
-            raise ValueError("source and source_piece must either be both null, or both non-null")
+            raise ValueError(
+                "source and source_piece must either "
+                "be both null, or both non-null"
+            )
         if (dest is None) != (dest_piece is None):
-            raise ValueError("dest and dest_piece must either be both null, or both non-null")
+            raise ValueError(
+                "dest and dest_piece must either be both null, "
+                "or both non-null"
+            )
         if dest is None and captured_piece is not None:
-            raise ValueError("Moves without a destination cannot have captured a piece")
+            raise ValueError(
+                "Moves without a destination "
+                "cannot have captured a piece"
+            )
 
         self._player = player
         self._source = source
@@ -353,67 +379,82 @@ class Move:
 
     def is_capture(self) -> bool:
         """
-        Determines whether this move is capturing an existing piece on the board.
+        Determines whether this move is capturing an existing
+        piece on the board.
         """
         return self._captured_piece is not None
 
     def is_dest_rosette(self, shape: BoardShape) -> bool:
         """
-        Determines whether this move will land a piece on a rosette. Under common
-        rule sets, this will give another turn to the player.
+        Determines whether this move will land a piece on a
+        rosette. Under common rule sets, this will give
+        another turn to the player.
         """
         return self._dest is not None and shape.is_rosette(self._dest)
 
     def get_source(self, paths: PathPair | None = None) -> Tile:
         """
-        Gets the source piece of this move. If there is no source piece, in the
-        case where a new piece is moved onto the board, this will throw an error.
+        Gets the source piece of this move. If there is no
+        source piece, in the case where a new piece is moved
+        onto the board, this will throw an error.
         """
         if self._source is None:
             if paths is not None:
                 return paths.get_start(self._player)
 
-            raise RuntimeError("This move has no source, as it is introducing a piece")
+            raise RuntimeError(
+                "This move has no source, as it is introducing a piece"
+            )
 
         return self._source
 
     def get_source_piece(self) -> Piece:
         """
-        Gets the source piece of this move. If there is no source piece, in the
-        case where a new piece is moved onto the board, this will throw an error.
+        Gets the source piece of this move. If there is no
+        source piece, in the case where a new piece is moved
+        onto the board, this will throw an error.
         """
         if self._source_piece is None:
-            raise RuntimeError("This move has no source, as it is introducing a piece")
+            raise RuntimeError(
+                "This move has no source, as it is introducing a piece"
+            )
 
         return self._source_piece
 
     def get_dest(self, paths: PathPair | None = None) -> Tile:
         """
-        Gets the destination tile of this move. If there is no destination tile,
-        in the case where a piece is moved off the board, this will throw an error.
+        Gets the destination tile of this move. If there
+        is no destination tile, in the case where a piece
+        is moved off the board, this will throw an error.
         """
         if self._dest is None:
             if paths is not None:
                 return paths.get_end(self._player)
 
-            raise RuntimeError("This move has no destination, as it is scoring a piece")
+            raise RuntimeError(
+                "This move has no destination, as it is scoring a piece"
+            )
 
         return self._dest
 
     def get_dest_piece(self) -> Piece:
         """
-        Gets the destination piece of this move. If there is no destination piece,
-        in the case where a piece is moved off the board, this will throw an error.
+        Gets the destination piece of this move. If there
+        is no destination piece, in the case where a piece
+        is moved off the board, this will throw an error.
         """
         if self._dest_piece is None:
-            raise RuntimeError("This move has no destination, as it is scoring a piece")
+            raise RuntimeError(
+                "This move has no destination, as it is scoring a piece"
+            )
 
         return self._dest_piece
 
     def get_captured_piece(self) -> Piece:
         """
-        Gets the piece that will be captured by this move. If there is no piece
-        that will be captured, this will throw an error.
+        Gets the piece that will be captured by this move.
+        If there is no piece that will be captured, this
+        will throw an error.
         """
         if self._captured_piece is None:
             raise RuntimeError("This move does not capture a piece");
@@ -465,6 +506,8 @@ class Move:
         if type(other) is not type(self):
             return False
 
-        return self._source == other._source and self._source_piece == other._source_piece \
-            and self._dest == other._dest and self._dest_piece == other._dest_piece \
+        return self._source == other._source \
+            and self._source_piece == other._source_piece \
+            and self._dest == other._dest \
+            and self._dest_piece == other._dest_piece \
             and self._captured_piece == other._captured_piece

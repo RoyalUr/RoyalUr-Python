@@ -45,15 +45,16 @@ class Dice(ABC):
 
     def has_state() -> bool:
         """
-        Returns whether this dice holds any state that affects its dice rolls.
-        If this is overriden, then copy_from should also be overriden.
+        Returns whether this dice holds any state that
+        affects its dice rolls. If this is overriden,
+        then copy_from should also be overriden.
         """
         return False
 
     def copy_from(self, other: 'Dice') -> bool:
         """
-        Copies the state of the other dice into this dice. If the dice does
-        not have state, this is a no-op.
+        Copies the state of the other dice into this dice.
+        If the dice does not have state, this is a no-op.
         """
         pass
 
@@ -67,16 +68,18 @@ class Dice(ABC):
     @abstractmethod
     def get_roll_probabilities(self) -> list[float]:
         """
-        Gets the probability of rolling each value of the dice, where the
-        index into the returned array represents the value of the roll.
+        Gets the probability of rolling each value of
+        the dice, where the index into the returned
+        array represents the value of the roll.
         """
         pass
 
     @abstractmethod
     def roll_value(self) -> int:
         """
-        Generates a random roll using this dice, and returns just the value.
-        If this dice has state, this should call record_roll.
+        Generates a random roll using this dice, and
+        returns just the value. If this dice has state,
+        this should call record_roll.
         """
         pass
 
@@ -95,8 +98,8 @@ class Dice(ABC):
 
     def roll(self, value: int | None = None) -> Roll:
         """
-        Generates a roll using this dice. If no value is provided, then the
-        value of the roll will be random.
+        Generates a roll using this dice. If no value is
+        provided, then the value of the roll will be random.
         """
         if value is None:
             value = self.roll_value()
@@ -200,17 +203,28 @@ class DiceType(Enum):
     The type of dice to use in a game.
     """
 
-    FOUR_BINARY = (1, "FourBinary", lambda: BinaryDice("FourBinary", 4))
+    FOUR_BINARY = (
+        1, "FourBinary",
+        lambda: BinaryDice("FourBinary", 4)
+    )
     """
     The standard board shape.
     """
 
-    THREE_BINARY_0MAX = (2, "ThreeBinary0Max", lambda: BinaryDice0AsMax("ThreeBinary0Max", 3))
+    THREE_BINARY_0MAX = (
+        2, "ThreeBinary0Max",
+        lambda: BinaryDice0AsMax("ThreeBinary0Max", 3)
+    )
     """
     The Aseb board shape.
     """
 
-    def __init__(self, value: int, text_name: str, create_dice: Callable[[], Dice]):
+    def __init__(
+            self,
+            value: int,
+            text_name: str,
+            create_dice: Callable[[], Dice]
+    ):
         self._value_ = value
         self._text_name = text_name
         self._create_dice = create_dice

@@ -9,7 +9,10 @@ class PathPair:
     Represents a pair of paths for the light and dark players to
     move their pieces along in a game of the Royal Game of Ur.
     """
-    __slots__ = ("_name", "_light_with_ends", "_dark_with_ends", "_light", "_dark",)
+    __slots__ = (
+        "_name", "_light_with_ends", "_dark_with_ends",
+        "_light", "_dark",
+    )
 
     _name: str
     _light_with_ends: list[Tile]
@@ -134,9 +137,10 @@ class PathPair:
 
     def is_equivalent(self, other: 'PathPair') -> bool:
         """
-        Determines whether this set of paths and other cover the same tiles,
-        in the same order. This does not check the start and end tiles that
-        exist off the board, or the name of the paths.
+        Determines whether this set of paths and other cover the
+        same tiles, in the same order. This does not check the
+        start and end tiles that exist off the board, or the name
+        of the paths.
         """
         return self._light == other._light
 
@@ -198,8 +202,9 @@ class BellPathPair(PathPair):
     """
     The paths proposed by Bell for the Royal Game of Ur.
 
-    Citation: R.C. Bell, Board and Table Games From Many Civilizations,
-    revised ed., Vol. 1 and 2, Dover Publications, Inc., New York, 1979.
+    Citation: R.C. Bell, Board and Table Games From Many
+    Civilizations, revised ed., Vol. 1 and 2, Dover
+    Publications, Inc., New York, 1979.
     """
     __slots__ = ()
 
@@ -244,8 +249,9 @@ class MastersPathPair(PathPair):
     """
     The paths proposed by Masters for the Royal Game of Ur.
 
-    Citation: J. Masters, The Royal Game of Ur &amp; The Game of 20 Squares (2021).
-    Available at https://www.tradgames.org.uk/games/Royal-Game-Ur.htm.
+    Citation: J. Masters, The Royal Game of Ur &amp; The
+    Game of 20 Squares (2021). Available at
+    https://www.tradgames.org.uk/games/Royal-Game-Ur.htm.
     """
     __slots__ = ()
 
@@ -294,8 +300,8 @@ class MurrayPathPair(PathPair):
     """
     The paths proposed by Murray for the Royal Game of Ur.
 
-    Citation: H.J.R. Murray, A History of Board-games Other Than Chess,
-    Oxford University Press, Oxford, 1952.
+    Citation: H.J.R. Murray, A History of Board-games
+    Other Than Chess, Oxford University Press, Oxford, 1952.
     """
     __slots__ = ()
 
@@ -395,7 +401,11 @@ class SkiriukPathPair(PathPair):
     """
 
     def __init__(self):
-        super().__init__(SkiriukPathPair.NAME, SkiriukPathPair.LIGHT_PATH, SkiriukPathPair.DARK_PATH)
+        super().__init__(
+            SkiriukPathPair.NAME,
+            SkiriukPathPair.LIGHT_PATH,
+            SkiriukPathPair.DARK_PATH
+        )
 
 
 class PathType(Enum):
@@ -428,7 +438,12 @@ class PathType(Enum):
     The path proposed by Skiriuk for the Royal Game of Ur.
     """
 
-    def __init__(self, value: int, text_name: str, create_path_pair: Callable[[], PathPair]):
+    def __init__(
+            self,
+            value: int,
+            text_name: str,
+            create_path_pair: Callable[[], PathPair]
+    ):
         self._value_ = value
         self._text_name = text_name
         self._create_path_pair = create_path_pair

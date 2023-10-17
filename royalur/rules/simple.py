@@ -26,11 +26,21 @@ class SimplePieceProvider(PieceProvider):
     __slots__ = ()
 
     @overrides
-    def create_introduced(self, owner: PlayerType, new_path_index: int) -> Piece:
+    def create_introduced(
+            self,
+            owner: PlayerType,
+            new_path_index: int
+    ) -> Piece:
+
         return Piece(owner, new_path_index)
 
     @overrides
-    def create_moved(self, origin_piece: Piece, new_path_index: int) -> Piece:
+    def create_moved(
+            self,
+            origin_piece: Piece,
+            new_path_index: int
+    ) -> Piece:
+
         return Piece(origin_piece.owner, new_path_index)
 
 
@@ -84,7 +94,11 @@ class SimpleRuleSet(RuleSet):
     The most common, simple, rules of the Royal Game of Ur.
     This still allows a large range of custom rules.
     """
-    __slots__ = ("_safe_rosettes", "_rosettes_grant_extra_rolls", "_captures_grant_extra_rolls")
+    __slots__ = (
+        "_safe_rosettes",
+        "_rosettes_grant_extra_rolls",
+        "_captures_grant_extra_rolls"
+    )
 
     _safe_rosettes: bool
     _rosettes_grant_extra_rolls: bool
@@ -101,7 +115,10 @@ class SimpleRuleSet(RuleSet):
             rosettes_grant_extra_rolls: bool,
             captures_grant_extra_rolls: bool,
     ):
-        super().__init__(board_shape, paths, dice_factory, piece_provider, player_state_provider)
+        super().__init__(
+            board_shape, paths, dice_factory,
+            piece_provider, player_state_provider
+        )
         self._safe_rosettes = safe_rosettes
         self._rosettes_grant_extra_rolls = rosettes_grant_extra_rolls
         self._captures_grant_extra_rolls = captures_grant_extra_rolls
@@ -156,7 +173,8 @@ class SimpleRuleSet(RuleSet):
                     None, None, None
                 ))
 
-        # Check for pieces on the board that can be moved to another tile on the board.
+        # Check for pieces on the board that can be moved
+        # to another tile on the board.
         for path_index in range(-1, len(path) - roll.value):
 
             if path_index >= 0:
@@ -192,9 +210,13 @@ class SimpleRuleSet(RuleSet):
 
             # Generate the move.
             if path_index >= 0:
-                moved_piece = self._piece_provider.create_moved(piece, dest_path_index)
+                moved_piece = self._piece_provider.create_moved(
+                    piece, dest_path_index
+                )
             else:
-                moved_piece = self._piece_provider.create_introduced(player_type, dest_path_index)
+                moved_piece = self._piece_provider.create_introduced(
+                    player_type, dest_path_index
+                )
 
             moves.append(Move(
                 player_type, tile, piece, dest, moved_piece, dest_piece
@@ -237,7 +259,9 @@ class SimpleRuleSet(RuleSet):
         """
         move = moved_state.move
 
-        if self._rosettes_grant_extra_rolls and move.is_dest_rosette(self._board_shape):
+        if self._rosettes_grant_extra_rolls \
+            and move.is_dest_rosette(self._board_shape):
+
             return True
 
         return self._captures_grant_extra_rolls and move.is_capture()
@@ -284,12 +308,18 @@ class SimpleRuleSet(RuleSet):
 
         # Determine which player is which.
         turn = turn_player.player
-        light_player = (turn_player if turn == PlayerType.LIGHT else other_player)
-        dark_player = (turn_player if turn == PlayerType.DARK else other_player)
+        light_player = (
+            turn_player if turn == PlayerType.LIGHT else other_player
+        )
+        dark_player = (
+            turn_player if turn == PlayerType.DARK else other_player
+        )
 
         # Check if the player has won the game.
         turn_player_pieces = turn_player.piece_count
-        if move.is_scoring_piece() and turn_player_pieces + board.count_pieces(turn) <= 0:
+        if move.is_scoring_piece() \
+            and turn_player_pieces + board.count_pieces(turn) <= 0:
+
             return [moved_state, WinGameState(
                 board, light_player, dark_player, turn
             )]

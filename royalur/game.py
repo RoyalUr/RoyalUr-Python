@@ -29,8 +29,9 @@ from typing import Iterable, Callable
 
 class Game:
     """
-    A game of the Royal Game of Ur. Provides methods to allow the playing of games,
-    and methods to support the retrieval of history about the moves that were made.
+    A game of the Royal Game of Ur. Provides methods to
+    allow the playing of games, and methods to support the
+    retrieval of history about the moves that were made.
     """
     __slots__ = ("_rules", "_dice", "_metadata", "_states")
 
@@ -131,7 +132,10 @@ class Game:
         made so far in the game. The last state in the list represents
         the last action that was taken in this game.
         """
-        return [state for state in self._states if isinstance(state, ActionGameState)]
+        return [
+            state for state in self._states
+            if isinstance(state, ActionGameState)
+        ]
 
     def get_landmark_states(self) -> list[ActionGameState]:
         """
@@ -142,7 +146,8 @@ class Game:
         """
         return [
             state for index, state in enumerate(self._states)
-            if isinstance(state, MovedGameState) or index == len(self._states) - 1
+            if isinstance(state, MovedGameState) \
+                or index == len(self._states) - 1
         ]
 
     def is_playable(self) -> bool:
@@ -153,13 +158,15 @@ class Game:
 
     def is_waiting_for_roll(self) -> bool:
         """
-        Determines whether the game is currently waiting for a roll from a player.
+        Determines whether the game is currently
+        waiting for a roll from a player.
         """
         return isinstance(self.get_current_state(), WaitingForRollGameState)
 
     def is_waiting_for_move(self) -> bool:
         """
-        Determines whether the game is currently waiting for a move from a player.
+        Determines whether the game is currently
+        waiting for a move from a player.
         """
         return isinstance(self.get_current_state(), WaitingForMoveGameState)
 
@@ -182,8 +189,9 @@ class Game:
 
     def get_current_waiting_for_roll_state(self) -> WaitingForRollGameState:
         """
-        Gets the current state of this game as an instance of WaitingForRollGameState.
-        This will throw an error if the game is not waiting for a roll from a player.
+        Gets the current state of this game as an instance
+        of WaitingForRollGameState. This will throw an error
+        if the game is not waiting for a roll from a player.
         """
         state = self.get_current_state()
         if not isinstance(state, WaitingForRollGameState):
@@ -193,8 +201,9 @@ class Game:
 
     def get_current_waiting_for_move_state(self) -> WaitingForMoveGameState:
         """
-        Gets the current state of this game as an instance of WaitingForMoveGameState.
-        This will throw an error if the game is not waiting for a  move from a player.
+        Gets the current state of this game as an instance
+        of WaitingForMoveGameState. This will throw an error
+        if the game is not waiting for a  move from a player.
         """
         state = self.get_current_state()
         if not isinstance(state, WaitingForMoveGameState):
@@ -204,8 +213,9 @@ class Game:
 
     def get_current_win_state(self) -> WinGameState:
         """
-        Gets the current state of this game as an instance of WinGameState.
-        This will throw an error if the game has not been won.
+        Gets the current state of this game as an instance
+        of WinGameState. This will throw an error if the
+        game has not been won.
         """
         state = self.get_current_state()
         if not isinstance(state, WinGameState):
@@ -215,8 +225,9 @@ class Game:
 
     def roll_dice(self, value: Roll | int | None = None) -> Roll:
         """
-        Rolls the dice, and updates the state of the game accordingly.
-        If a value is supplied, then the roll will have that value.
+        Rolls the dice, and updates the state of the
+        game accordingly. If a value is supplied, then
+        the roll will have that value.
         """
         if value is None or not isinstance(value, Roll):
             roll = self._dice.roll(value)
@@ -258,7 +269,10 @@ class Game:
             piece = move
             state = self.get_current_waiting_for_move_state()
             for avail_move in state.available_moves:
-                if avail_move.has_source() and avail_move.get_source_piece() == piece:
+
+                if avail_move.has_source() \
+                    and avail_move.get_source_piece() == piece:
+
                     self._make_move(avail_move)
                     return
 
@@ -288,7 +302,9 @@ class Game:
                 self._make_move(move)
                 return
 
-        raise ValueError(f"There is no available move to introduce a piece to the board")
+        raise ValueError(
+            "There is no available move to introduce a piece to the board"
+        )
 
     def get_board(self) -> Board:
         """
@@ -380,9 +396,13 @@ class Game:
     @staticmethod
     def builder() -> 'GameBuilder':
         """
-        Creates a builder to assist in constructing games with custom settings.
+        Creates a builder to assist in constructing games
+        with custom settings.
         """
-        return GameBuilder(GameSettings.create_finkel(), SimpleRuleSetProvider())
+        return GameBuilder(
+            GameSettings.create_finkel(),
+            SimpleRuleSetProvider()
+        )
 
     @staticmethod
     def create(settings: GameSettings):
@@ -394,33 +414,39 @@ class Game:
     @staticmethod
     def create_finkel():
         """
-        Creates a game that follows the rules proposed by Irving Finkel.
-        This uses the simple rules, the standard board shape, Bell's path, safe
-        rosette tiles, the standard dice, and seven starting pieces per player.
+        Creates a game that follows the rules proposed by
+        Irving Finkel. This uses the simple rules, the
+        standard board shape, Bell's path, safe rosette
+        tiles, the standard dice, and seven starting
+        pieces per player.
         """
         return Game.create(GameSettings.create_finkel())
 
     @staticmethod
     def create_finkel():
         """
-        Creates a game that follows the rules proposed by James Masters.
-        This uses the simple rules, the standard board shape, Bell's path, unsafe
-        rosette tiles, the standard dice, and seven starting pieces per player.
+        Creates a game that follows the rules proposed by
+        James Masters. This uses the simple rules, the
+        standard board shape, Bell's path, unsafe rosette
+        tiles, the standard dice, and seven starting
+        pieces per player.
         """
         return Game.create(GameSettings.create_masters())
 
     @staticmethod
     def create_aseb():
         """
-        Creates a game of Aseb. This uses the simple rules, the Aseb board shape,
-        the Aseb paths, the standard dice, and five starting pieces per player.
+        Creates a game of Aseb. This uses the simple rules,
+        the Aseb board shape, the Aseb paths, the standard
+        dice, and five starting pieces per player.
         """
         return Game.create(GameSettings.create_aseb())
 
 
 class GameBuilder:
     """
-    A builder to help in the creation of custom games of the Royal Game of Ur.
+    A builder to help in the creation of custom games
+    of the Royal Game of Ur.
     """
     __slots__ = ("_settings", "_rule_set_provider")
 
@@ -476,34 +502,53 @@ class GameBuilder:
         """
         return self.replace_settings(GameSettings.create_aseb())
 
-    def board_shape(self, board_shape: BoardShape | BoardType) -> 'GameBuilder':
+    def board_shape(
+            self,
+            board_shape: BoardShape | BoardType
+    ) -> 'GameBuilder':
         """
         Copies this game builder with the shape of the board updated.
         """
-        return self.replace_settings(self._settings.with_board_shape(board_shape))
+        return self.replace_settings(
+            self._settings.with_board_shape(board_shape)
+        )
 
-    def paths(self, paths: PathPair | PathType) -> 'GameBuilder':
+    def paths(
+            self,
+            paths: PathPair | PathType
+    ) -> 'GameBuilder':
         """
-        Copies this game builder with the paths taken by each player updated.
+        Copies this game builder with the paths taken
+        by each player updated.
         """
         return self.replace_settings(self._settings.with_paths(paths))
 
-    def dice(self, dice: Callable[[], Dice] | DiceType) -> 'GameBuilder':
+    def dice(
+            self,
+            dice: Callable[[], Dice] | DiceType
+    ) -> 'GameBuilder':
         """
-        Copies this game builder with the factory used to generate dice updated.
+        Copies this game builder with the factory
+        used to generate dice updated.
         """
         return self.replace_settings(self._settings.with_dice(dice))
 
-    def starting_piece_count(self, starting_piece_count: int) -> 'GameBuilder':
+    def starting_piece_count(
+            self,
+            starting_piece_count: int
+    ) -> 'GameBuilder':
         """
-        Copies this game builder with the number of starting
-        pieces of each player updated.
+        Copies this game builder with the number of
+        starting pieces of each player updated.
         """
         return self.replace_settings(
             self._settings.with_starting_piece_count(starting_piece_count)
         )
 
-    def safe_rosettes(self, safe_rosettes: bool) -> 'GameBuilder':
+    def safe_rosettes(
+            self,
+            safe_rosettes: bool
+    ) -> 'GameBuilder':
         """
         Copies this game builder with whether rosettes are safe
         from capture set to the given value.
@@ -512,22 +557,32 @@ class GameBuilder:
             self._settings.with_safe_rosettes(safe_rosettes)
         )
 
-    def rosettes_grant_extra_rolls(self, rosettes_grant_extra_rolls: bool) -> 'GameBuilder':
+    def rosettes_grant_extra_rolls(
+            self,
+            rosettes_grant_extra_rolls: bool
+    ) -> 'GameBuilder':
         """
         Copies this game builder with whether landing on a rosette
         grants an additional roll set to the given value.
         """
         return self.replace_settings(
-            self._settings.with_rosettes_grant_extra_rolls(rosettes_grant_extra_rolls)
+            self._settings.with_rosettes_grant_extra_rolls(
+                rosettes_grant_extra_rolls
+            )
         )
 
-    def captures_grant_extra_rolls(self, captures_grant_extra_rolls: bool) -> 'GameBuilder':
+    def captures_grant_extra_rolls(
+            self,
+            captures_grant_extra_rolls: bool
+    ) -> 'GameBuilder':
         """
         Copies this game builder with whether capturing a piece
         grants an additional roll set to the given value.
         """
         return self.replace_settings(
-            self._settings.with_captures_grant_extra_rolls(captures_grant_extra_rolls)
+            self._settings.with_captures_grant_extra_rolls(
+                captures_grant_extra_rolls
+            )
         )
 
     def build_rules(self) -> RuleSet:
