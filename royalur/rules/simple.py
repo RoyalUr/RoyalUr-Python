@@ -16,6 +16,7 @@ from royalur.rules.rules import (
     RuleSet, RuleSetProvider,
 )
 from overrides import overrides
+from typing import Callable
 
 
 class SimplePieceProvider(PieceProvider):
@@ -93,7 +94,7 @@ class SimpleRuleSet(RuleSet):
             self,
             board_shape: BoardShape,
             paths: PathPair,
-            dice_factory: callable[[], Dice],
+            dice_factory: Callable[[], Dice],
             piece_provider: PieceProvider,
             player_state_provider: PlayerStateProvider,
             safe_rosettes: bool,

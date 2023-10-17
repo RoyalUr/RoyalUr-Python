@@ -4,6 +4,7 @@ from royalur.model import (
 )
 from .state import GameState, WaitingForRollGameState, WaitingForMoveGameState
 from abc import ABC, abstractmethod
+from typing import Callable
 
 
 class PieceProvider(ABC):
@@ -82,7 +83,7 @@ class RuleSet(ABC):
 
     _board_shape: BoardShape
     _paths: PathPair
-    _dice_factory: callable[[], Dice]
+    _dice_factory: Callable[[], Dice]
     _piece_provider: PieceProvider
     _player_state_provider: PlayerStateProvider
 
@@ -90,7 +91,7 @@ class RuleSet(ABC):
             self,
             board_shape: BoardShape,
             paths: PathPair,
-            dice_factory: callable[[], Dice],
+            dice_factory: Callable[[], Dice],
             piece_provider: PieceProvider,
             player_state_provider: PlayerStateProvider
     ):
@@ -115,7 +116,7 @@ class RuleSet(ABC):
         self._paths
 
     @property
-    def dice_factory(self) -> callable[[], Dice]:
+    def dice_factory(self) -> Callable[[], Dice]:
         """
         The generator of dice that are used to generate dice rolls.
         """
