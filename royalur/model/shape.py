@@ -158,7 +158,7 @@ class AsebBoardShape(BoardShape):
     The name given to this board shape.
     """
 
-    BOARD_TILES: set[Tile] = set(AsebPathPair.LIGHT_PATH).union(set(AsebPathPair.DARK_PATH))
+    BOARD_TILES: set[Tile] = set(AsebPathPair.LIGHT_PATH[1:-1]).union(set(AsebPathPair.DARK_PATH[1:-1]))
     """
     The set of all tiles that exist on the board.
     """
@@ -194,7 +194,7 @@ class StandardBoardShape(BoardShape):
     The name given to this board shape.
     """
 
-    BOARD_TILES: set[Tile] = set(BellPathPair.LIGHT_PATH).union(set(BellPathPair.DARK_PATH))
+    BOARD_TILES: set[Tile] = set(BellPathPair.LIGHT_PATH[1:-1]).union(set(BellPathPair.DARK_PATH[1:-1]))
     """
     The set of all tiles that exist on the board.
     """
