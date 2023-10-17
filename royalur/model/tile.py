@@ -19,7 +19,7 @@ class Tile:
         if y < 0:
             raise ValueError(
                 f"y must not be negative. Invalid value: {y}"
-            );
+            )
 
         self._x = x
         self._y = y

@@ -165,8 +165,8 @@ class SimpleRuleSet(RuleSet):
             score_tile = path[score_path_index]
             score_piece = board.get(score_tile)
             if score_piece is not None \
-                and score_piece.owner == player_type \
-                and score_piece.path_index == score_path_index:
+                    and score_piece.owner == player_type \
+                    and score_piece.path_index == score_path_index:
 
                 moves.append(Move(
                     player_type, score_tile, score_piece,
@@ -182,8 +182,8 @@ class SimpleRuleSet(RuleSet):
                 tile = path[path_index]
                 piece = board.get(tile)
                 if piece is None \
-                    or piece.owner != player_type \
-                    or piece.path_index != path_index:
+                        or piece.owner != player_type \
+                        or piece.path_index != path_index:
                     continue
 
             elif player.piece_count > 0:
@@ -260,7 +260,7 @@ class SimpleRuleSet(RuleSet):
         move = moved_state.move
 
         if self._rosettes_grant_extra_rolls \
-            and move.is_dest_rosette(self._board_shape):
+                and move.is_dest_rosette(self._board_shape):
 
             return True
 
@@ -318,7 +318,7 @@ class SimpleRuleSet(RuleSet):
         # Check if the player has won the game.
         turn_player_pieces = turn_player.piece_count
         if move.is_scoring_piece() \
-            and turn_player_pieces + board.count_pieces(turn) <= 0:
+                and turn_player_pieces + board.count_pieces(turn) <= 0:
 
             return [moved_state, WinGameState(
                 board, light_player, dark_player, turn

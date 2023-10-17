@@ -457,7 +457,7 @@ class Move:
         will throw an error.
         """
         if self._captured_piece is None:
-            raise RuntimeError("This move does not capture a piece");
+            raise RuntimeError("This move does not capture a piece")
 
         return self._captured_piece
 

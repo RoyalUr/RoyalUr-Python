@@ -107,5 +107,5 @@ class PlayerState:
             return False
 
         return self._player == other._player \
-            and self._piece_count == other._piece_count and \
-                self._score == other._score
+            and self._piece_count == other._piece_count \
+            and self._score == other._score

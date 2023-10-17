@@ -166,7 +166,7 @@ class AsebBoardShape(BoardShape):
 
     BOARD_TILES: set[Tile] = (
         set(AsebPathPair.LIGHT_PATH[1:-1])
-            .union(set(AsebPathPair.DARK_PATH[1:-1]))
+        .union(set(AsebPathPair.DARK_PATH[1:-1]))
     )
     """
     The set of all tiles that exist on the board.
@@ -205,7 +205,7 @@ class StandardBoardShape(BoardShape):
 
     BOARD_TILES: set[Tile] = (
         set(BellPathPair.LIGHT_PATH[1:-1])
-            .union(set(BellPathPair.DARK_PATH[1:-1]))
+        .union(set(BellPathPair.DARK_PATH[1:-1]))
     )
     """
     The set of all tiles that exist on the board.

@@ -65,7 +65,7 @@ class Game:
         """
         Create an exact copy of this game.
         """
-        if type(self) != Game:
+        if type(self) is not Game:
             raise RuntimeError(f"{type(self)} does not support copy")
 
         new_game = Game(
@@ -146,8 +146,8 @@ class Game:
         """
         return [
             state for index, state in enumerate(self._states)
-            if isinstance(state, MovedGameState) \
-                or index == len(self._states) - 1
+            if isinstance(state, MovedGameState)
+            or index == len(self._states) - 1
         ]
 
     def is_playable(self) -> bool:
@@ -252,7 +252,6 @@ class Game:
         state = self.get_current_waiting_for_move_state()
         self.add_states(self._rules.apply_move(state, move))
 
-
     def make_move(self, move: Move | Piece | Tile):
         """
         Applies the given move to update the state of the game.
@@ -271,7 +270,7 @@ class Game:
             for avail_move in state.available_moves:
 
                 if avail_move.has_source() \
-                    and avail_move.get_source_piece() == piece:
+                        and avail_move.get_source_piece() == piece:
 
                     self._make_move(avail_move)
                     return
@@ -423,7 +422,7 @@ class Game:
         return Game.create(GameSettings.create_finkel())
 
     @staticmethod
-    def create_finkel():
+    def create_masters():
         """
         Creates a game that follows the rules proposed by
         James Masters. This uses the simple rules, the

@@ -154,7 +154,10 @@ class GameSettings:
         Generates new game settings with new dice.
         """
         if isinstance(dice, DiceType):
-            dice = lambda: dice.create_dice()
+            def create_from_dice_type():
+                return dice.create_dice()
+
+            dice = create_from_dice_type
 
         return GameSettings(
             self._board_shape, self._paths, dice,

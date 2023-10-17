@@ -158,7 +158,7 @@ class BinaryDice(Dice):
     @overrides
     def generate_roll(self, value: int) -> Roll:
         if value < 0 or value > self._num_die:
-            raise ValueError(f"This dice cannot roll {value}");
+            raise ValueError(f"This dice cannot roll {value}")
 
         return Roll(value)
 
@@ -193,7 +193,7 @@ class BinaryDice0AsMax(BinaryDice):
     @overrides
     def generate_roll(self, value: int) -> Roll:
         if value <= 0 or value > self.max_roll_value:
-            raise ValueError(f"This dice cannot roll {value}");
+            raise ValueError(f"This dice cannot roll {value}")
 
         return Roll(value)
 
