@@ -9,10 +9,15 @@ of it being enjoyed by people who lived over 5,000 years ago!
 This library aims to bring this ancient board game into the modern age by supporting
 digital versions of the game, statistical analysis of its rules, and the use
 of AI to play the game. A board used to play The Royal Game of Ur is shown below,
-which was found by Sir Leonard Woolley. It is currently on display at the British Museum!
+which was excavated by Sir Leonard Woolley in the 1930s.
+It is currently on display at the British Museum!
 
 <p align="center">
-  <img alt="British Museum game board found by Sir Leonard Woolley" height="300" src="docs/res/bm_board.png" />
+  <img alt="British Museum game board excavated by Sir Leonard Woolley" height="300" src="docs/res/bm_board.png" />
+</p>
+<p align="center">
+  Photo of an excavated board of the Royal Game of Ur that is dated to 2500 BC.<br/>
+  © The Trustees of the British Museum.
 </p>
 
 ### Resources
