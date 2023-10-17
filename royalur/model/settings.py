@@ -1,7 +1,7 @@
 from .shape import BoardShape, BoardType
 from .path import PathPair, PathType
 from .dice import Dice, DiceType
-from typing import Union
+from typing import Union, Callable
 
 
 class GameSettings:
@@ -18,7 +18,7 @@ class GameSettings:
 
     _board_shape: BoardShape
     _paths: PathPair
-    _dice_factory: callable[[], Dice]
+    _dice_factory: Callable[[], Dice]
     _starting_piece_count: int
     _safe_rosettes: bool
     _rosettes_grant_extra_rolls: bool
@@ -28,7 +28,7 @@ class GameSettings:
             self,
             board_shape: BoardShape,
             paths: PathPair,
-            dice_factory: callable[[], Dice],
+            dice_factory: Callable[[], Dice],
             starting_piece_count: int,
             safe_rosettes: bool,
             rosettes_grant_extra_rolls: bool,
@@ -134,13 +134,13 @@ class GameSettings:
         )
 
     @property
-    def dice(self) -> callable[[], Dice]:
+    def dice(self) -> Callable[[], Dice]:
         """
         A generator for the dice that should be used to generate dice rolls in games.
         """
         return self._dice_factory
 
-    def with_dice(self, dice: Union[callable[[], Dice], DiceType]) -> 'GameSettings':
+    def with_dice(self, dice: Union[Callable[[], Dice], DiceType]) -> 'GameSettings':
         """
         Generates new game settings with new dice.
         """

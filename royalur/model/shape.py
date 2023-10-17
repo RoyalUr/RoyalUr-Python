@@ -1,7 +1,7 @@
 from .player import Tile
 from .path import BellPathPair, AsebPathPair
 from enum import Enum
-from typing import Iterable
+from typing import Iterable, Callable
 
 
 class BoardShape:
@@ -233,7 +233,7 @@ class BoardType(Enum):
     The Aseb board shape.
     """
 
-    def __init__(self, value: int, text_name: str, create_board_shape: callable[[], BoardShape]):
+    def __init__(self, value: int, text_name: str, create_board_shape: Callable[[], BoardShape]):
         self._value_ = value
         self._text_name = text_name
         self._create_board_shape = create_board_shape

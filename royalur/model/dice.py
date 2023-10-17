@@ -2,6 +2,7 @@ import random
 from enum import Enum
 from abc import ABC, abstractmethod
 from overrides import overrides
+from typing import Callable
 
 
 class Roll:
@@ -209,7 +210,7 @@ class DiceType(Enum):
     The Aseb board shape.
     """
 
-    def __init__(self, value: int, text_name: str, create_dice: callable[[], Dice]):
+    def __init__(self, value: int, text_name: str, create_dice: Callable[[], Dice]):
         self._value_ = value
         self._text_name = text_name
         self._create_dice = create_dice
@@ -222,7 +223,7 @@ class DiceType(Enum):
         return self._text_name
 
     @property
-    def dice_factory(self) -> callable[[], Dice]:
+    def dice_factory(self) -> Callable[[], Dice]:
         """
         The factory that is used to produce this type of dice.
         """
