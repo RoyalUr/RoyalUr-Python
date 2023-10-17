@@ -26,6 +26,8 @@ It is currently on display at the British Museum!
 
 * Prefer Java to Python? [Check out RoyalUr-Java.](https://github.com/RoyalUr/RoyalUr-Java)
 
+* [Play The Royal Game of Ur on RoyalUr.net.](https://royalur.net/)
+
 # 🚀 Example
 
 The following is a small example that shows the basics of creating
