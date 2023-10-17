@@ -47,6 +47,8 @@ a game, autonomously playing through it by making random moves,
 and reporting what happens in the game as it progresses.
 
 ```python
+from royalur import Game
+
 # Create a new game using the Finkel rules.
 game = Game.create_finkel()
 
