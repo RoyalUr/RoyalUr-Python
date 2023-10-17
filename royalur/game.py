@@ -1,10 +1,21 @@
 from .model import (
-    GameMetadata, Dice, Roll,
-    Board, Move, Piece, Tile,
-    PlayerState, PlayerType,
+    GameMetadata,
+    GameSettings,
+    DiceType,
+    Dice, Roll,
+    BoardShape,
+    BoardType,
+    PathPair,
+    PathType,
+    Board, Move,
+    Piece, Tile,
+    PlayerState,
+    PlayerType,
 )
 from .rules import (
-    RuleSet, GameState,
+    RuleSet,
+    RuleSetProvider,
+    GameState,
     ActionGameState,
     PlayableGameState,
     WaitingForRollGameState,
@@ -12,7 +23,8 @@ from .rules import (
     MovedGameState,
     WinGameState,
 )
-from typing import Iterable
+from .rules.simple import SimpleRuleSetProvider
+from typing import Iterable, Callable
 
 
 class Game:
@@ -365,9 +377,167 @@ class Game:
         """
         return self.get_current_waiting_for_move_state().roll
 
+    @staticmethod
+    def builder() -> 'GameBuilder':
+        """
+        Creates a builder to assist in constructing games with custom settings.
+        """
+        return GameBuilder(GameSettings.create_finkel(), SimpleRuleSetProvider)
+
+    @staticmethod
+    def create(settings: GameSettings):
+        """
+        Creates a game that follows the given settings.
+        """
+        return Game.builder().replace_settings(settings).build()
+
+    @staticmethod
+    def create_finkel():
+        """
+        Creates a game that follows the rules proposed by Irving Finkel.
+        This uses the simple rules, the standard board shape, Bell's path, safe
+        rosette tiles, the standard dice, and seven starting pieces per player.
+        """
+        return Game.create(GameSettings.create_finkel())
+
+    @staticmethod
+    def create_finkel():
+        """
+        Creates a game that follows the rules proposed by James Masters.
+        This uses the simple rules, the standard board shape, Bell's path, unsafe
+        rosette tiles, the standard dice, and seven starting pieces per player.
+        """
+        return Game.create(GameSettings.create_masters())
+
+    @staticmethod
+    def create_aseb():
+        """
+        Creates a game of Aseb. This uses the simple rules, the Aseb board shape,
+        the Aseb paths, the standard dice, and five starting pieces per player.
+        """
+        return Game.create(GameSettings.create_aseb())
+
 
 class GameBuilder:
     """
     A builder to help in the creation of custom games of the Royal Game of Ur.
     """
-    pass
+    __slots__ = ("_settings", "_rule_set_provider")
+
+    _settings: GameSettings
+    _rule_set_provider: RuleSetProvider
+
+    def __init__(
+            self,
+            settings: GameSettings,
+            rule_set_provider: RuleSetProvider
+    ):
+        self._settings = settings
+        self._rule_set_provider = rule_set_provider
+
+    @property
+    def settings(self) -> GameSettings:
+        """
+        The settings of the game being built.
+        """
+        return self._settings
+
+    @property
+    def rule_set_provider(self) -> RuleSetProvider:
+        """
+        The provider to use to construct the final rule set.
+        """
+        return self._rule_set_provider
+
+    def replace_settings(self, settings: GameSettings) -> 'GameBuilder':
+        """
+        Create a copy of this game builder with new settings.
+        """
+        return GameBuilder(settings, self.rule_set_provider)
+
+    def finkel(self) -> 'GameBuilder':
+        """
+        Creates a new builder that allows the construction of games
+        following the simple rules proposed by Irving Finkel.
+        """
+        return self.replace_settings(GameSettings.create_finkel())
+
+    def masters(self) -> 'GameBuilder':
+        """
+        Creates a new builder that allows the construction of games
+        following the rules proposed by James Masters.
+        """
+        return self.replace_settings(GameSettings.create_masters())
+
+    def aseb(self) -> 'GameBuilder':
+        """
+        Creates a new builder that allows the construction of games
+        following the Aseb rules.
+        """
+        return self.replace_settings(GameSettings.create_aseb())
+
+    def board_shape(self, board_shape: BoardShape | BoardType) -> 'GameBuilder':
+        """
+        Copies this game builder with the shape of the board updated.
+        """
+        return self.replace_settings(self._settings.with_board_shape(board_shape))
+
+    def paths(self, paths: PathPair | PathType) -> 'GameBuilder':
+        """
+        Copies this game builder with the paths taken by each player updated.
+        """
+        return self.replace_settings(self._settings.with_paths(paths))
+
+    def dice(self, dice: Callable[[], Dice] | DiceType) -> 'GameBuilder':
+        """
+        Copies this game builder with the factory used to generate dice updated.
+        """
+        return self.replace_settings(self._settings.with_dice(dice))
+
+    def starting_piece_count(self, starting_piece_count: int) -> 'GameBuilder':
+        """
+        Copies this game builder with the number of starting
+        pieces of each player updated.
+        """
+        return self.replace_settings(
+            self._settings.with_starting_piece_count(starting_piece_count)
+        )
+
+    def safe_rosettes(self, safe_rosettes: bool) -> 'GameBuilder':
+        """
+        Copies this game builder with whether rosettes are safe
+        from capture set to the given value.
+        """
+        return self.replace_settings(
+            self._settings.with_safe_rosettes(safe_rosettes)
+        )
+
+    def rosettes_grant_extra_rolls(self, rosettes_grant_extra_rolls: bool) -> 'GameBuilder':
+        """
+        Copies this game builder with whether landing on a rosette
+        grants an additional roll set to the given value.
+        """
+        return self.replace_settings(
+            self._settings.with_rosettes_grant_extra_rolls(rosettes_grant_extra_rolls)
+        )
+
+    def captures_grant_extra_rolls(self, captures_grant_extra_rolls: bool) -> 'GameBuilder':
+        """
+        Copies this game builder with whether capturing a piece
+        grants an additional roll set to the given value.
+        """
+        return self.replace_settings(
+            self._settings.with_captures_grant_extra_rolls(captures_grant_extra_rolls)
+        )
+
+    def build_rules(self) -> RuleSet:
+        """
+        Generates a rule set to match the settings in this builder.
+        """
+        return self._rule_set_provider.create(self._settings, GameMetadata())
+
+    def build(self) -> Game:
+        """
+        Generates a new game using the rules set in this builder.
+        """
+        return Game(self.build_rules())
