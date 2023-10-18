@@ -1,5 +1,5 @@
 <p align="center">
-  <img alt="RoyalUr-Python Logo" height="180" src="https://raw.githubusercontent.com/RoyalUr/RoyalUr-Python/master/docs/res/banner.png" />
+  <img alt="RoyalUr-Python Logo" width="485" height="180" src="https://raw.githubusercontent.com/RoyalUr/RoyalUr-Python/master/docs/res/banner.png" />
 </p>
 
 This library provides a Python API for the play and analysis of games of **The Royal Game of Ur**!
@@ -15,7 +15,7 @@ which was excavated by Sir Leonard Woolley in the 1930s.
 It is currently on display at the British Museum!
 
 <p align="center">
-  <img alt="British Museum game board excavated by Sir Leonard Woolley" height="300" src="https://raw.githubusercontent.com/RoyalUr/RoyalUr-Python/master/docs/res/bm_board.png" />
+  <img alt="British Museum game board excavated by Sir Leonard Woolley" width="610" height="300" src="https://raw.githubusercontent.com/RoyalUr/RoyalUr-Python/master/docs/res/bm_board.png" />
 </p>
 <p align="center">
   Photo of an excavated board of the Royal Game of Ur that is dated to 2500 BC.<br/>
@@ -112,7 +112,7 @@ created and used instead (e.g., for a new path around the board).
 - Aseb.
 
 <p align="center">
-  <img alt="Supported Board Shapes" height="350" src="https://raw.githubusercontent.com/RoyalUr/RoyalUr-Python/master/docs/res/board_shapes.png" />
+  <img alt="Supported Board Shapes" width="241" height="350" src="https://raw.githubusercontent.com/RoyalUr/RoyalUr-Python/master/docs/res/board_shapes.png" />
 </p>
 
 **Paths:**
@@ -123,7 +123,7 @@ created and used instead (e.g., for a new path around the board).
 - Aseb path proposed by Murray.
 
 <p align="center">
-  <img alt="Supported Paths" height="350" src="https://raw.githubusercontent.com/RoyalUr/RoyalUr-Python/master/docs/res/paths.png" />
+  <img alt="Supported Paths" width="500" height="350" src="https://raw.githubusercontent.com/RoyalUr/RoyalUr-Python/master/docs/res/paths.png" />
 </p>
 
 **Dice:**
