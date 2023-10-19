@@ -48,6 +48,7 @@ and reporting what happens in the game as it progresses.
 
 ```python
 from royalur import Game
+import random
 
 # Create a new game using the Finkel rules.
 game = Game.create_finkel()
