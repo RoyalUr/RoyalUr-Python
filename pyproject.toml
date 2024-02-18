@@ -1,3 +1,20 @@
+[tool.poetry]
+name = "royalur-python"
+version = "0.0.6"
+description = "An API to support the playing and analysis of games of The Royal Game of Ur."
+authors = ["Padraig Lamont <padraiglamont@gmail.com>"]
+license = "MIT License"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+
+[tool.poetry.group.dev.dependencies]
+flake8 = "^7.0.0"
+pytest = "^8.0.1"
+
 [build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
