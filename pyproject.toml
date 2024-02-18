@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "royalur-python"
+name = "RoyalUr"
 version = "0.0.6"
 description = "An API to support the playing and analysis of games of The Royal Game of Ur."
 authors = ["Padraig Lamont <padraiglamont@gmail.com>"]
