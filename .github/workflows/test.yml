@@ -32,8 +32,8 @@ jobs:
         poetry install --with dev
     - name: Lint with flake8
       run: |
-        flake8 . --count --statistics
+        poetry run flake8 . --count --statistics
     - name: Test with pytest
       run: |
-        pytest
+        poetry run pytest
 
