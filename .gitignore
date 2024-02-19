@@ -140,6 +140,3 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-
-# Royal Game of Ur LUT binary files
-*.rgu
