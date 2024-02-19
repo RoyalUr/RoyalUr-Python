@@ -1,16 +1,22 @@
 import copy
 import json
-from typing import Any, Callable, Dict, Iterator, Tuple
+from typing import Any, Dict, Iterator
 import sys
 import numpy as np
 import time
+
 
 class Lut:
     """
     This class provides a way to look up values in a look-up table (LUT).
     """
 
-    def __init__(self, keys: np.array, values: np.array, file_metadata: Dict[str, Any]):
+    def __init__(
+            self,
+            keys: np.array,
+            values: np.array,
+            file_metadata: Dict[str, Any],
+    ):
         """
         Create a new instance of the Lut class.
 
@@ -77,20 +83,13 @@ class Lut:
         return Lut(self._keys.copy(), self._values.copy(), self._metadata)
 
     def __deepcopy__(self, memo: Dict[int, object]) -> "Lut":
-        return Lut(copy.deepcopy(self._keys, memo), copy.deepcopy(self._values, memo), copy.deepcopy(self._metadata, memo))
+        return Lut(
+            copy.deepcopy(self._keys, memo),
+            copy.deepcopy(self._values, memo),
+            copy.deepcopy(self._metadata, memo),
+        )
 
-    def __getstate__(self) -> Dict[str, Any]:
-        return {"lut": (self._keys, self._values, self._metadata)}
 
-    def __setstate__(self, state: Dict[str, Any]) -> None:
-        self._keys, self._values, self._metadata = state["lut"]
-
-    def __reduce__(self) -> Tuple[Callable, Tuple, Dict[str, Any]]:
-        return (Lut, (self._keys, self._values, self._metadata), {})
-
-    def __reduce_ex__(self, protocol: int) -> Tuple[Callable, Tuple, Dict[str, Any]]:
-        return self.__reduce__()
-    
 class LutReader:
     """
     This class provides a way to read the look-up table (LUT) from a file.
@@ -135,29 +134,47 @@ class LutReader:
             raise ValueError("Only version 0 is implemented")
         # then, the next 4 bytes are the number of entries in the json header
         header_length = self._from_bytes(binary_contents[4:8])
-        # then, the next header_length bytes are the json header and is utf-8 encoded
+        # then, the next header_length bytes are the json header
+        # and is utf-8 encoded
         header_end = 8 + header_length
         json_header = binary_contents[8:header_end].decode("utf-8")
         # then, the next 4 bytes are key value types
-        key_value_types = self._from_bytes(binary_contents[header_end:header_end + 4])
+        key_value_types = self._from_bytes(binary_contents[
+            header_end: header_end + 4
+        ])
         # then, the next 4 bytes are value types
-        value_types = self._from_bytes(binary_contents[header_end + 4:header_end + 8])
+        value_types = self._from_bytes(binary_contents[
+            header_end + 4: header_end + 8
+        ])
         # then, the next 4 bytes are the number of entries in the lut
-        lut_length = self._from_bytes(binary_contents[header_end + 8:header_end + 12])
+        lut_length = self._from_bytes(binary_contents[
+            header_end + 8: header_end + 12
+        ])
 
         # then, the next lut_length * key_value_types bytes are the lut keys
         key_value_size = LutReader.key_value_types[key_value_types]
         lut_start = header_end + 12
         lut_end = lut_start + lut_length * key_value_size
-        lut_keys = np.frombuffer(binary_contents, dtype=f'>i{key_value_size}', count=lut_length, offset=lut_start)
+        lut_keys = np.frombuffer(
+            binary_contents,
+            dtype=f">i{key_value_size}",
+            count=lut_length,
+            offset=lut_start,
+        )
 
         # then, the next lut_length * value_types bytes are the lut values
         value_size = LutReader.key_value_types[value_types]
-        lut_values = np.frombuffer(binary_contents, dtype=f'>i{value_size}', count=lut_length, offset=lut_end)
+        lut_values = np.frombuffer(
+            binary_contents, dtype=f">i{value_size}",
+            count=lut_length,
+            offset=lut_end,
+        )
 
-        # explanation of the dtype argument is > for big-endian, i for integer, and the number of bytes
+        # explanation of the dtype argument is
+        # > for big-endian, i for integer, and the number of bytes
 
-        # making sure the lengths of the keys and values are the same and that they are the same as the lut length in the header
+        # making sure the lengths of the keys and values are the same
+        # and that they are the same as the lut length in the header
         assert len(lut_keys) == len(lut_values)
         assert len(lut_keys) == lut_length
 
@@ -166,18 +183,22 @@ class LutReader:
         size_of_lut_in_file = lut_length * (key_value_size + value_size)
         size_of_lut_numpy = sys.getsizeof(lut_keys) + sys.getsizeof(lut_values)
 
-        return Lut(lut_keys, lut_values, {
-            "raw_header": json_header,
-            "decoded_header": json.loads(json_header),
-            "version": version,
-            "key_types": key_value_types,
-            "key_int_size_bytes": key_value_size,
-            "value_types": value_types,
-            "value_int_size_bytes": value_size,
-            "lut_length": lut_length,
-            "time_to_read_seconds": time_to_read,
-            "size_of_lut_in_file_bytes": size_of_lut_in_file,
-            "size_of_lut_numpy_bytes": size_of_lut_numpy,
-            "size_ratio": size_of_lut_numpy / size_of_lut_in_file,
-            "path": self._file_path,
-        })
+        return Lut(
+            lut_keys,
+            lut_values,
+            {
+                "raw_header": json_header,
+                "decoded_header": json.loads(json_header),
+                "version": version,
+                "key_types": key_value_types,
+                "key_int_size_bytes": key_value_size,
+                "value_types": value_types,
+                "value_int_size_bytes": value_size,
+                "lut_length": lut_length,
+                "time_to_read_seconds": time_to_read,
+                "size_of_lut_in_file_bytes": size_of_lut_in_file,
+                "size_of_lut_numpy_bytes": size_of_lut_numpy,
+                "size_ratio": size_of_lut_numpy / size_of_lut_in_file,
+                "path": self._file_path,
+            },
+        )

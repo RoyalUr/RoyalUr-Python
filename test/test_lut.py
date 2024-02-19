@@ -1,4 +1,3 @@
-import json
 import unittest
 from royalur import LutReader
 
@@ -10,7 +9,7 @@ class TestLut(unittest.TestCase):
             7: 0,
             10: 15,
             13: -2,
-            16:13,
+            16: 13,
             19: -4,
             22: 11,
             25: -6,
@@ -22,7 +21,7 @@ class TestLut(unittest.TestCase):
             43: -12,
             46: 3,
             49: -14,
-            52: 1
+            52: 1,
         }
         r = LutReader("test/lut/sample_small.rgu")
         lut = r.read()
