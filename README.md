@@ -139,6 +139,13 @@ created and used instead (e.g., for a new path around the board).
 - Whether landing on a rosette grants an extra roll.
 - Whether capturing a piece grants an extra roll.
 
+# 🔧 Developing the library
+
+This library is using [Poetry](https://python-poetry.org) as a dependency-management platform. You can follow the instructions on their site to install poertry on your system and when you are ready:
+
+`poetry install --with dev` as to set yourself up to develop.
+
+When the dependencies have been installed, use `poetry shell` as to use the virtualenv and start developing.
 
 # 📝 License
 This library is licensed under the MIT license.
