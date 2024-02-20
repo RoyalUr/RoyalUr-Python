@@ -1,8 +1,6 @@
-import copy
 import json
-from typing import Any, Dict, Iterator
+from typing import Any, Dict
 import sys
-import numpy as np
 import time
 
 
@@ -12,10 +10,10 @@ class Lut:
     """
 
     def __init__(
-            self,
-            keys: np.array,
-            values: np.array,
-            file_metadata: Dict[str, Any],
+        self,
+        keys: bytes,
+        values: bytes,
+        file_metadata: Dict[str, Any],
     ):
         """
         Create a new instance of the Lut class.
@@ -25,6 +23,9 @@ class Lut:
         self._keys = keys
         self._values = values
         self._metadata = file_metadata
+        self._value_size = self._metadata["value_int_size_bytes"]
+        self._key_size = self._metadata["key_int_size_bytes"]
+        self._len = int(len(self._keys) / self._key_size)
 
     def get_metadata(self) -> Dict[str, Any]:
         """
@@ -41,34 +42,66 @@ class Lut:
         :param key: The key to look up.
         :return: The value associated with the key.
         """
-        index = np.searchsorted(self._keys, key)
-        if index >= len(self._keys) or self._keys[index] != key:
-            raise KeyError(f"Key {key} not found")
-        return self._values[index]
+        index = self._find_index(key)
+        if index is None:
+            raise KeyError(f"Key {key} not found in look-up table")
+        value_size = self._value_size
+        return int.from_bytes(
+            self._values[index * value_size: (index + 1) * value_size],
+            byteorder="big",
+            signed=True,
+        )
+
+    def _get_key_at_index(self, index: int) -> int:
+        return int.from_bytes(
+            self._keys[index * self._key_size: (index + 1) * self._key_size],
+            byteorder="big",
+            signed=True,
+        )
+
+    def _find_index(self, key: int) -> int:
+        """
+        Find the index of a key in the look-up table.
+        Uses binary search to find the index of the key in the keys array.
+        The keys are assumed to be sorted.
+        """
+        low = 0
+        high = self._len - 1
+
+        while low <= high:
+            mid = (low + high) // 2
+            mid_key = self._get_key_at_index(mid)
+            if mid_key == key:
+                return mid
+            elif mid_key < key:
+                low = mid + 1
+            else:
+                high = mid - 1
+
+        return None  # If the target is not in the array
 
     def __getitem__(self, key: int) -> int:
         return self.lookup(key)
 
     def __contains__(self, key: int) -> bool:
-        return key in self._keys
+        return self._find_index(key) is not None
 
     def __len__(self) -> int:
-        return len(self._keys)
-
-    def __iter__(self) -> Iterator[int]:
-        return iter(self._keys)
+        return self._len
 
     def __str__(self) -> str:
         # lut is too large to print
-        return f"Lut({len(self._keys)} entries)"
+        return f"Lut({self._len} entries)"
 
     def __repr__(self) -> str:
-        return f"Lut({len(self._keys)} entries)"
+        return f"Lut({self._len} entries)"
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Lut):
             return False
-        return self._keys == other._keys and self._values == other._values
+        return self._keys == other._keys \
+            and self._values == other._values \
+            and self._metadata == other._metadata
 
     def __ne__(self, other: object) -> bool:
         return not self.__eq__(other)
@@ -80,13 +113,10 @@ class Lut:
         return bool(self._keys)
 
     def __copy__(self) -> "Lut":
-        return Lut(self._keys.copy(), self._values.copy(), self._metadata)
-
-    def __deepcopy__(self, memo: Dict[int, object]) -> "Lut":
         return Lut(
-            copy.deepcopy(self._keys, memo),
-            copy.deepcopy(self._values, memo),
-            copy.deepcopy(self._metadata, memo),
+            self._keys.copy(),
+            self._values.copy(),
+            self._metadata.copy(),
         )
 
 
@@ -140,52 +170,42 @@ class LutReader:
         json_header = binary_contents[8:header_end].decode("utf-8")
         # then, the next 4 bytes are key value types
         key_value_types = self._from_bytes(binary_contents[
-            header_end: header_end + 4
+            header_end:
+            header_end + 4
         ])
         # then, the next 4 bytes are value types
         value_types = self._from_bytes(binary_contents[
-            header_end + 4: header_end + 8
+            header_end + 4:
+            header_end + 8
         ])
         # then, the next 4 bytes are the number of entries in the lut
         lut_length = self._from_bytes(binary_contents[
-            header_end + 8: header_end + 12
+            header_end + 8:
+            header_end + 12
         ])
 
         # then, the next lut_length * key_value_types bytes are the lut keys
         key_value_size = LutReader.key_value_types[key_value_types]
         lut_start = header_end + 12
         lut_end = lut_start + lut_length * key_value_size
-        lut_keys = np.frombuffer(
-            binary_contents,
-            dtype=f">i{key_value_size}",
-            count=lut_length,
-            offset=lut_start,
-        )
+        lut_keys_bytes = binary_contents[lut_start:lut_end]
 
         # then, the next lut_length * value_types bytes are the lut values
         value_size = LutReader.key_value_types[value_types]
-        lut_values = np.frombuffer(
-            binary_contents, dtype=f">i{value_size}",
-            count=lut_length,
-            offset=lut_end,
-        )
-
-        # explanation of the dtype argument is
-        # > for big-endian, i for integer, and the number of bytes
-
-        # making sure the lengths of the keys and values are the same
-        # and that they are the same as the lut length in the header
-        assert len(lut_keys) == len(lut_values)
-        assert len(lut_keys) == lut_length
+        lut_values_bytes = binary_contents[
+            lut_end:
+            lut_end + lut_length * value_size
+        ]
 
         time_to_read = time.time() - start_time
 
         size_of_lut_in_file = lut_length * (key_value_size + value_size)
-        size_of_lut_numpy = sys.getsizeof(lut_keys) + sys.getsizeof(lut_values)
+        size_of_lut_bytes = sys.getsizeof(lut_keys_bytes) + \
+            sys.getsizeof(lut_values_bytes)
 
         return Lut(
-            lut_keys,
-            lut_values,
+            lut_keys_bytes,
+            lut_values_bytes,
             {
                 "raw_header": json_header,
                 "decoded_header": json.loads(json_header),
@@ -196,9 +216,9 @@ class LutReader:
                 "value_int_size_bytes": value_size,
                 "lut_length": lut_length,
                 "time_to_read_seconds": time_to_read,
-                "size_of_lut_in_file_bytes": size_of_lut_in_file,
-                "size_of_lut_numpy_bytes": size_of_lut_numpy,
-                "size_ratio": size_of_lut_numpy / size_of_lut_in_file,
+                "size_of_lut_file_bytes": size_of_lut_in_file,
+                "size_of_lut_python_bytes": size_of_lut_bytes,
+                "size_ratio": size_of_lut_bytes / size_of_lut_in_file,
                 "path": self._file_path,
             },
         )
