@@ -50,7 +50,7 @@ class Lut:
         :param key: The key to look up.
         :return: The value associated with the key.
         """
-        index, _ = self._find_key_index(map_index, key)
+        index, _, _ = self._find_key_index(map_index, key)
         if index is None:
             raise KeyError(f"Key {key} not found in look-up table")
         return self._get_value_at_index(map_index, index)["value"]
@@ -62,13 +62,17 @@ class Lut:
         :param key: The key to look up.
         :return: The value associated with the key.
         """
-        index, steps = self._find_key_index(map_index, key)
+        start_time = time.time()
+        index, key_lookup, steps = self._find_key_index(map_index, key)
         if index is None:
             raise KeyError(f"Key {key} not found in look-up table")
+        lookup = self._get_value_at_index(map_index, index)
         return {
             "index_of_key": index,
             "key_binary_search_steps": steps,
-            "lookup_details": self._get_value_at_index(map_index, index),
+            "value_lookup_details": lookup,
+            "key_lookup_details": key_lookup,
+            "time_to_lookup_seconds": time.time() - start_time,
         }
 
     def _query_bytestring(
@@ -126,15 +130,15 @@ class Lut:
 
         while low <= high:
             mid = (low + high) // 2
-            mid_key = self._get_key_at_index(map_index, mid)["value"]
-            if mid_key == key:
-                return mid, steps
-            elif mid_key < key:
+            mid_key = self._get_key_at_index(map_index, mid)
+            if mid_key["value"] == key:
+                return mid, mid_key, steps
+            elif mid_key["value"] < key:
                 low = mid + 1
             else:
                 high = mid - 1
             steps += 1
-        return None, steps  # If the target is not in the array
+        return None, None, steps  # If the target is not in the array
 
     def __len__(self) -> int:
         return self._len

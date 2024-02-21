@@ -34,8 +34,7 @@ class TestLut(unittest.TestCase):
         numpy_values = lut.values_as_numpy()
 
         # print the first 10 keys and values
-        for i in range(500):
-            print(numpy_keys[i], numpy_values[i] / 65535)
-        return
+        for i in range(200):
+            print(numpy_keys[i], round(numpy_values[i] / 65535, 4))
         for key, value in expected_dict_values.items():
             self.assertEqual(lut.lookup(0, key), value)
