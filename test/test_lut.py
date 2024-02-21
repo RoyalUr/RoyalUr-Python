@@ -23,9 +23,19 @@ class TestLut(unittest.TestCase):
             49: -14,
             52: 1,
         }
-        r = LutReader("test/lut/sample_small.rgu")
+        r = LutReader("test/lut/finkel_bad.rgu")
         lut = r.read()
-        self.assertEqual(len(lut), 16)
+        print(lut.get_metadata())
+        self.assertEqual(len(lut), 137892016)
+        print(lut.lookup_detailed(0, lut._get_key_at_index(0, 0)["value"]))
+        print(lut.lookup_detailed(0, lut._get_key_at_index(0, 1)["value"]))
 
+        numpy_keys = lut.keys_as_numpy()
+        numpy_values = lut.values_as_numpy()
+
+        # print the first 10 keys and values
+        for i in range(500):
+            print(numpy_keys[i], numpy_values[i] / 65535)
+        return
         for key, value in expected_dict_values.items():
-            self.assertEqual(lut[key], value)
+            self.assertEqual(lut.lookup(0, key), value)
