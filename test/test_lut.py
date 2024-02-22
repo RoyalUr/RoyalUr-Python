@@ -42,6 +42,17 @@ class TestLut(unittest.TestCase):
         r = LutReader("test/lut/finkel2p.rgu")
         lut = r.read()
         # Create a new game using the Finkel rules.
+        light_wins = 0
+        game = self.play_random(lut)
+        for _ in range(100):
+            game = self.play_random(lut)
+            print(f"{game.get_winner().text_name} won the game!")
+            if game.get_winner() == PlayerType.LIGHT:
+                light_wins += 1
+
+        self.assertGreater(light_wins, 75)
+
+    def play_random(self, lut):
         game = Game.create_finkel()
         encoding = SimpleGameStateEncoding()
 
@@ -87,7 +98,4 @@ class TestLut(unittest.TestCase):
                     move = moves[random.randint(0, len(moves) - 1)]
                 game.make_move(move)
                 print(f"{turn_player_name}: {move.describe()}")
-
-        # Report the winner!
-        print(f"{game.get_winner().text_name} won the game!")
-        self.assertEqual(game.get_winner(), PlayerType.LIGHT)
+        return game
