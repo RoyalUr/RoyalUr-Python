@@ -29,11 +29,23 @@ class Lut:
         self._map_sizes = self._metadata["size_of_maps"]
         self._len = int(len(self._keys) / self._key_size)
 
-    def keys_as_numpy(self):
-        return np.frombuffer(self._keys, dtype=f'>u{self._key_size}')
+    def keys_as_numpy(self, map_index: int = 0):
+        map_offset = self._get_map_offset(map_index)
+        return np.frombuffer(
+            self._keys,
+            dtype=f'>u{self._key_size}',
+            count=self._map_sizes[map_index],
+            offset=map_offset,
+        )
 
-    def values_as_numpy(self):
-        return np.frombuffer(self._values, dtype=f'>u{self._value_size}')
+    def values_as_numpy(self, map_index: int = 0):
+        map_offset = self._get_map_offset(map_index)
+        return np.frombuffer(
+            self._values,
+            dtype=f'>u{self._value_size}',
+            count=self._map_sizes[map_index],
+            offset=map_offset,
+        )
 
     def get_metadata(self) -> Dict[str, Any]:
         """
