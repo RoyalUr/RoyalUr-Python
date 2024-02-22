@@ -30,7 +30,7 @@ class Lut:
         self._len = int(len(self._keys) / self._key_size)
 
     def keys_as_numpy(self, map_index: int = 0):
-        map_offset = self._get_map_offset(map_index)
+        map_offset = self._get_map_offset(map_index, self._key_size)
         return np.frombuffer(
             self._keys,
             dtype=f'>u{self._key_size}',
@@ -39,7 +39,7 @@ class Lut:
         )
 
     def values_as_numpy(self, map_index: int = 0):
-        map_offset = self._get_map_offset(map_index)
+        map_offset = self._get_map_offset(map_index, self._value_size)
         return np.frombuffer(
             self._values,
             dtype=f'>u{self._value_size}',
@@ -94,7 +94,7 @@ class Lut:
             collection: bytes,
             item_size: int
     ) -> int:
-        map_offset = self._get_map_offset(map_index)
+        map_offset = self._get_map_offset(map_index, item_size)
         return {
             "map_offset": map_offset,
             "value": int.from_bytes(
@@ -126,9 +126,9 @@ class Lut:
             self._key_size,
         )
 
-    def _get_map_offset(self, map_index):
+    def _get_map_offset(self, map_index, item_size):
         # compute map offset based on map index and map sizes
-        return sum(self._map_sizes[:map_index]) * self._key_size
+        return sum(self._map_sizes[:map_index]) * item_size
 
     def _find_key_index(self, map_index: int, key: int) -> tuple:
         """
