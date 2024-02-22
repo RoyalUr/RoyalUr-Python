@@ -24,6 +24,17 @@ class GameState(ABC):
         self._light_player = light_player
         self._dark_player = dark_player
 
+    def copy_inverted(self) -> 'GameState':
+        """
+        Generates a copy of this game state with the players
+        swapped.
+        """
+        return self.__class__(
+            self._board.copy(invert=True),
+            self._dark_player,
+            self._light_player
+        )
+
     @property
     def board(self) -> Board:
         """
@@ -100,6 +111,19 @@ class OngoingGameState(GameState):
     @overrides
     def is_finished(self) -> bool:
         return False
+
+    @overrides
+    def copy_inverted(self) -> 'OngoingGameState':
+        """
+        Generates a copy of this game state with the players
+        swapped.
+        """
+        return self.__class__(
+            self._board.copy(invert=True),
+            self._dark_player,
+            self._light_player,
+            self._turn.get_other_player(),
+        )
 
     def get_turn(self) -> PlayerType:
         """

@@ -64,6 +64,22 @@ class GameSettings:
         )
 
     @staticmethod
+    def create_finkel_2() -> 'GameSettings':
+        """
+        Creates an instance of the rules used in the YouTube
+        video Tom Scott vs. Irving Finkel.
+        """
+        return GameSettings(
+            BoardType.STANDARD.create_board_shape(),
+            PathType.BELL.create_path_pair(),
+            lambda: DiceType.FOUR_BINARY.create_dice(),
+            2,
+            True,
+            True,
+            False,
+        )
+
+    @staticmethod
     def create_masters() -> 'GameSettings':
         """
         Creates an instance of the settings proposed by James Masters.

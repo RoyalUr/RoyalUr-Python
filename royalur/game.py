@@ -419,7 +419,7 @@ class Game:
         tiles, the standard dice, and seven starting
         pieces per player.
         """
-        return Game.create(GameSettings.create_finkel())
+        return Game.create(GameSettings.create_finkel_2())
 
     @staticmethod
     def create_masters():

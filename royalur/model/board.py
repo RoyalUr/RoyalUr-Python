@@ -80,7 +80,7 @@ class Board:
     _pieces: list[Optional[Piece]]
 
     def __init__(
-            self, board_or_shape: Union[BoardShape, 'Board']
+            self, board_or_shape: Union[BoardShape, 'Board'], invert: bool = False
     ):
         if isinstance(board_or_shape, BoardShape):
             shape = board_or_shape
@@ -92,15 +92,30 @@ class Board:
         self._height = shape.height
 
         if isinstance(board_or_shape, Board):
-            self._pieces = [*board_or_shape._pieces]
+            if invert:
+                self._pieces = [Piece(p.owner.get_other_player(), p.path_index) if p is not None else None for p in board_or_shape._pieces]
+                # swap _pieces over the width
+                new_pieces = []
+                for iy in range(self._height):
+                    for ix in range(self._width):
+                        if ix == 0:
+                            new_pieces.append(self._pieces[2 + iy * self._width])
+                        if ix == 1:
+                            new_pieces.append(self._pieces[1 + iy * self._width])
+                        if ix == 2:
+                            new_pieces.append(self._pieces[0 + iy * self._width])
+                self._pieces = new_pieces
+
+            else:
+                self._pieces = [*board_or_shape._pieces]
         else:
             self._pieces = [None for _ in range(self._width * self._height)]
 
-    def copy(self) -> 'Board':
+    def copy(self, invert: bool = False) -> 'Board':
         """
         Creates an exact copy of this board.
         """
-        return Board(self)
+        return Board(self, invert)
 
     def _calc_tile_index(self, ix: int, iy: int) -> int:
         """
