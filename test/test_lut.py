@@ -13,7 +13,6 @@ class TestLut(unittest.TestCase):
             603979776: 33985,  # Is a starting state
             67108864: 65535,  # Is a winning state
             33554432: 65535,  # Is a winning state
-            603979776: 33985,  # Is a starting state
         }
         r = LutReader("test/lut/finkel2p.rgu")
         lut = r.read()
@@ -43,7 +42,6 @@ class TestLut(unittest.TestCase):
         lut = r.read()
         # Create a new game using the Finkel rules.
         light_wins = 0
-        game = self.play_random(lut)
         for _ in range(100):
             game = self.play_random(lut)
             print(f"{game.get_winner().text_name} won the game!")
