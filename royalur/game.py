@@ -411,7 +411,7 @@ class Game:
         return Game.builder().replace_settings(settings).build()
 
     @staticmethod
-    def create_finkel():
+    def create_finkel(pawns: int = 7):
         """
         Creates a game that follows the rules proposed by
         Irving Finkel. This uses the simple rules, the
@@ -419,7 +419,7 @@ class Game:
         tiles, the standard dice, and seven starting
         pieces per player.
         """
-        return Game.create(GameSettings.create_finkel())
+        return Game.create(GameSettings.create_finkel(pawns))
 
     @staticmethod
     def create_masters():

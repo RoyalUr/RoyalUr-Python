@@ -7,3 +7,6 @@ class GameMetadata:
     @staticmethod
     def create_for_new_game(settings: GameSettings) -> 'GameMetadata':
         return GameMetadata()
+
+    def copy(self) -> 'GameMetadata':
+        return GameMetadata()
