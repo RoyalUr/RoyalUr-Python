@@ -4,6 +4,10 @@ from royalur.game import Game
 import random
 from royalur.lut.lut_player import LutAgent
 from royalur.model.player import PlayerType
+from huggingface_hub import hf_hub_download
+
+REPO_ID = "sothatsit/RoyalUr"
+FILENAME = "finkel2p.rgu"
 
 
 class TestLut(unittest.TestCase):
@@ -14,7 +18,8 @@ class TestLut(unittest.TestCase):
             67108864: 65535,  # Is a winning state
             33554432: 65535,  # Is a winning state
         }
-        r = LutReader("test/lut/finkel2p.rgu")
+        filename = hf_hub_download(repo_id=REPO_ID, filename=FILENAME)
+        r = LutReader(filename)
         lut = r.read()
         lut_meta = lut.get_metadata()
 
@@ -24,10 +29,7 @@ class TestLut(unittest.TestCase):
         self.assertRaises(IndexError, lut.values_as_numpy, 1)
 
         self.assertEqual(lut_meta["number_of_maps"], 1)
-        self.assertEqual(
-            lut_meta["decoded_header"]["author"],
-            "Padraig Lamont"
-        )
+        self.assertEqual(lut_meta["decoded_header"]["author"], "Padraig Lamont")
         self.assertEqual(lut_meta["size_of_maps"][0], 12990)
         self.assertEqual(len(lut), 12990)
         self.assertEqual(len(numpy_keys), 12990)
@@ -38,27 +40,24 @@ class TestLut(unittest.TestCase):
 
     def test_lut_plays_against_random_and_wins(self):
         random.seed(99_999_999)
+        filename = hf_hub_download(repo_id=REPO_ID, filename=FILENAME)
         # Create a new game using the Finkel rules.
         light_wins = 0
-        lut_player = LutAgent("test/lut/finkel2p.rgu")
+        lut_player = LutAgent(filename)
         for _ in range(100):
-            game = self.play_random(lut_player)
-            print(f"{game.get_winner().text_name} won the game!")
+            game = self.play_random_vs_lut(lut_player)
             if game.get_winner() == PlayerType.LIGHT:
                 light_wins += 1
-
+        print(light_wins)
         self.assertGreater(light_wins, 75)
 
-    def play_random(self, lut_player):
-        game = Game.create_finkel(2)
+    def play_random_vs_lut(self, lut_player):
+        game = Game.create_finkel(pawns=2)
 
         while not game.is_finished():
-            turn_player_name = game.get_turn().text_name
-
             if game.is_waiting_for_roll():
                 # Roll the dice!
-                roll = game.roll_dice()
-                print(f"{turn_player_name}: Roll {roll.value}")
+                game.roll_dice()
 
             else:
                 if game.get_turn() == PlayerType.LIGHT:
@@ -68,5 +67,4 @@ class TestLut(unittest.TestCase):
                     moves = game.find_available_moves()
                     move = moves[random.randint(0, len(moves) - 1)]
                 game.make_move(move)
-                print(f"{turn_player_name}: {move.describe()}")
         return game
