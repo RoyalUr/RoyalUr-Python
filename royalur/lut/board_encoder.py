@@ -15,7 +15,7 @@ class SimpleGameStateEncoding:
             raise RuntimeError("Expected the middle lane to take 13 bits")
 
     def generate_middle_lane_compression(self) -> List[int]:
-        middle_lane_compression = [-1] * 0xffff
+        middle_lane_compression = [-1] * 0xFFFF
         states = []
         self.add_middle_lane_states(states, 0, 7, 7, 0)
 
@@ -43,13 +43,17 @@ class SimpleGameStateEncoding:
             if next_index == 8:
                 states.append(new_state)
             else:
-                self.add_middle_lane_states(states, new_state, new_light_pieces, new_dark_pieces, next_index)
+                self.add_middle_lane_states(
+                    states, new_state, new_light_pieces, new_dark_pieces, next_index
+                )
 
     def encode_middle_lane(self, board):
         state = 0
         for index in range(8):
             piece = board._pieces[board._calc_tile_index(1, index)]
-            occupant = 0 if piece is None else (1 if piece.owner == PlayerType.DARK else 2)
+            occupant = (
+                0 if piece is None else (1 if piece.owner == PlayerType.DARK else 2)
+            )
             state |= occupant << (2 * index)
 
         compressed = self.middle_lane_compression[state]
@@ -83,7 +87,10 @@ class SimpleGameStateEncoding:
 
     def encode_game_state(self, game_state):
         if not game_state.get_turn() == PlayerType.LIGHT:
-            raise ValueError("Only game states where it is the light player's turn are supported by this encoding")
+            raise ValueError(
+                "Only game states where it is the light player's "
+                "turn are supported by this encoding"
+            )
 
         state = self.encode_board(game_state.board)
         state |= game_state.dark_player._piece_count << 25

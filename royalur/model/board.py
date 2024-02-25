@@ -9,6 +9,7 @@ class Piece:
     """
     A piece on a board.
     """
+
     __slots__ = ("_owner", "_path_index")
 
     _owner: PlayerType
@@ -28,9 +29,7 @@ class Piece:
             ValueError: If the provided path_index is negative.
         """
         if path_index < 0:
-            raise ValueError(
-                f"The path index cannot be negative: {path_index}"
-            )
+            raise ValueError(f"The path index cannot be negative: {path_index}")
 
         self._owner = owner
         self._path_index = path_index
@@ -56,11 +55,10 @@ class Piece:
         if type(other) is not type(self):
             return False
 
-        return self._owner == other._owner \
-            and self._path_index == other._path_index
+        return self._owner == other._owner and self._path_index == other._path_index
 
     @staticmethod
-    def to_char(piece: Optional['Piece']) -> str:
+    def to_char(piece: Optional["Piece"]) -> str:
         """
         Converts the given piece to a single character that can be used
         to textually represent the owner of a piece.
@@ -72,6 +70,7 @@ class Board:
     """
     Stores the placement of pieces on the tiles of a Royal Game of Ur board.
     """
+
     __slots__ = ("_shape", "_width", "_height", "_pieces")
 
     _shape: BoardShape
@@ -80,7 +79,7 @@ class Board:
     _pieces: list[Optional[Piece]]
 
     def __init__(
-            self, board_or_shape: Union[BoardShape, 'Board'], invert: bool = False
+        self, board_or_shape: Union[BoardShape, "Board"], invert: bool = False
     ):
         if isinstance(board_or_shape, BoardShape):
             shape = board_or_shape
@@ -93,7 +92,14 @@ class Board:
 
         if isinstance(board_or_shape, Board):
             if invert:
-                self._pieces = [Piece(p.owner.get_other_player(), p.path_index) if p is not None else None for p in board_or_shape._pieces]
+                self._pieces = [
+                    (
+                        Piece(p.owner.get_other_player(), p.path_index)
+                        if p is not None
+                        else None
+                    )
+                    for p in board_or_shape._pieces
+                ]
                 # swap _pieces over the width
                 new_pieces = []
                 for iy in range(self._height):
@@ -111,7 +117,7 @@ class Board:
         else:
             self._pieces = [None for _ in range(self._width * self._height)]
 
-    def copy(self, invert: bool = False) -> 'Board':
+    def copy(self, invert: bool = False) -> "Board":
         """
         Creates an exact copy of this board.
         """
@@ -200,10 +206,7 @@ class Board:
         return previous
 
     def set_by_indices(
-            self,
-            ix: int,
-            iy: int,
-            piece: Optional[Piece]
+        self, ix: int, iy: int, piece: Optional[Piece]
     ) -> Optional[Piece]:
         """
         Sets the piece on the tile at the indices (ix, iy), 0-based,
@@ -242,13 +245,10 @@ class Board:
         if type(other) is not type(self):
             return False
 
-        return self._shape == other._shape \
-            and self._pieces == other._pieces
+        return self._shape == other._shape and self._pieces == other._pieces
 
     def to_string(
-            self,
-            column_delimiter: str = "\n",
-            include_off_board_tiles: bool = True
+        self, column_delimiter: str = "\n", include_off_board_tiles: bool = True
     ):
         """
         Writes the contents of this board into a String, where
@@ -277,9 +277,14 @@ class Move:
     """
     A move that can be made on a board.
     """
+
     __slots__ = (
-        "_player", "_source", "_source_piece",
-        "_dest", "_dest_piece", "_captured_piece"
+        "_player",
+        "_source",
+        "_source_piece",
+        "_dest",
+        "_dest_piece",
+        "_captured_piece",
     )
 
     _player: PlayerType
@@ -290,28 +295,25 @@ class Move:
     _captured_piece: Optional[Piece]
 
     def __init__(
-            self,
-            player: PlayerType,
-            source: Optional[Tile],
-            source_piece: Optional[Piece],
-            dest: Optional[Tile],
-            dest_piece: Optional[Piece],
-            captured_piece: Optional[Piece],
+        self,
+        player: PlayerType,
+        source: Optional[Tile],
+        source_piece: Optional[Piece],
+        dest: Optional[Tile],
+        dest_piece: Optional[Piece],
+        captured_piece: Optional[Piece],
     ):
         if (source is None) != (source_piece is None):
             raise ValueError(
-                "source and source_piece must either "
-                "be both null, or both non-null"
+                "source and source_piece must either " "be both null, or both non-null"
             )
         if (dest is None) != (dest_piece is None):
             raise ValueError(
-                "dest and dest_piece must either be both null, "
-                "or both non-null"
+                "dest and dest_piece must either be both null, " "or both non-null"
             )
         if dest is None and captured_piece is not None:
             raise ValueError(
-                "Moves without a destination "
-                "cannot have captured a piece"
+                "Moves without a destination " "cannot have captured a piece"
             )
 
         self._player = player
@@ -417,9 +419,7 @@ class Move:
             if paths is not None:
                 return paths.get_start(self._player)
 
-            raise RuntimeError(
-                "This move has no source, as it is introducing a piece"
-            )
+            raise RuntimeError("This move has no source, as it is introducing a piece")
 
         return self._source
 
@@ -430,9 +430,7 @@ class Move:
         onto the board, this will throw an error.
         """
         if self._source_piece is None:
-            raise RuntimeError(
-                "This move has no source, as it is introducing a piece"
-            )
+            raise RuntimeError("This move has no source, as it is introducing a piece")
 
         return self._source_piece
 
@@ -446,9 +444,7 @@ class Move:
             if paths is not None:
                 return paths.get_end(self._player)
 
-            raise RuntimeError(
-                "This move has no destination, as it is scoring a piece"
-            )
+            raise RuntimeError("This move has no destination, as it is scoring a piece")
 
         return self._dest
 
@@ -459,9 +455,7 @@ class Move:
         is moved off the board, this will throw an error.
         """
         if self._dest_piece is None:
-            raise RuntimeError(
-                "This move has no destination, as it is scoring a piece"
-            )
+            raise RuntimeError("This move has no destination, as it is scoring a piece")
 
         return self._dest_piece
 
@@ -511,18 +505,24 @@ class Move:
         return "".join(builder)
 
     def __hash__(self) -> int:
-        return hash((
-            self._source, self._source_piece,
-            self._dest, self._dest_piece,
-            self._captured_piece
-        ))
+        return hash(
+            (
+                self._source,
+                self._source_piece,
+                self._dest,
+                self._dest_piece,
+                self._captured_piece,
+            )
+        )
 
     def __eq__(self, other: object) -> bool:
         if type(other) is not type(self):
             return False
 
-        return self._source == other._source \
-            and self._source_piece == other._source_piece \
-            and self._dest == other._dest \
-            and self._dest_piece == other._dest_piece \
+        return (
+            self._source == other._source
+            and self._source_piece == other._source_piece
+            and self._dest == other._dest
+            and self._dest_piece == other._dest_piece
             and self._captured_piece == other._captured_piece
+        )
