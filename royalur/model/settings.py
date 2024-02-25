@@ -48,7 +48,7 @@ class GameSettings:
         self._captures_grant_extra_rolls = captures_grant_extra_rolls
 
     @staticmethod
-    def create_finkel() -> 'GameSettings':
+    def create_finkel(pawns: int = 7) -> 'GameSettings':
         """
         Creates an instance of the rules used in the YouTube
         video Tom Scott vs. Irving Finkel.
@@ -57,23 +57,7 @@ class GameSettings:
             BoardType.STANDARD.create_board_shape(),
             PathType.BELL.create_path_pair(),
             lambda: DiceType.FOUR_BINARY.create_dice(),
-            7,
-            True,
-            True,
-            False,
-        )
-
-    @staticmethod
-    def create_finkel_2() -> 'GameSettings':
-        """
-        Creates an instance of the rules used in the YouTube
-        video Tom Scott vs. Irving Finkel.
-        """
-        return GameSettings(
-            BoardType.STANDARD.create_board_shape(),
-            PathType.BELL.create_path_pair(),
-            lambda: DiceType.FOUR_BINARY.create_dice(),
-            2,
+            pawns,
             True,
             True,
             False,
