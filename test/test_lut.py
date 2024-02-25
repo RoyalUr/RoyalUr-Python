@@ -48,7 +48,6 @@ class TestLut(unittest.TestCase):
             game = self.play_random_vs_lut(lut_player)
             if game.get_winner() == PlayerType.LIGHT:
                 light_wins += 1
-        print(light_wins)
         self.assertGreater(light_wins, 75)
 
     def play_random_vs_lut(self, lut_player):
