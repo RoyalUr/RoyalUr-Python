@@ -205,10 +205,7 @@ def game_consumer(game):
 
 def final_consume(consumed_count, game_buffer, BUFFER_SIZE):
     with open(f"game_states_{(consumed_count // BUFFER_SIZE) + 1}.txt", "w") as f:
-        for stuff_tuple in game_buffer:
-            if stuff_tuple is not None:
-                board_state, light_score, dark_score, lut_encoding = stuff_tuple
-                f.write(f"{board_state} {light_score} {dark_score} {lut_encoding}\n")
+        f.write("".join([x for x in game_buffer if x is not None]))
     print(f"Consumed {consumed_count} games")
 
 
@@ -225,8 +222,8 @@ def loop_board_states(game, board_index):
     current_state = game.get_current_state()
     light_player = current_state._light_player
     dark_player = current_state._dark_player
-    original_light_score = light_player.score
-    original_dark_score = dark_player.score
+    original_light_score = light_player._score
+    original_dark_score = dark_player._score
 
     for occupant in range(occupants):
         new_light_score = original_light_score
