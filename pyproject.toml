@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "RoyalUr"
-version = "0.0.6"
+version = "0.0.7"
 description = "An API to support the playing and analysis of games of The Royal Game of Ur."
 authors = ["Padraig Lamont <padraiglamont@gmail.com>"]
 license = "MIT License"
@@ -10,6 +10,7 @@ readme = "README.md"
 python = "^3.10"
 numpy = "^1.26.4"
 huggingface-hub = "^0.20.3"
+overrides = "^7.7.0"
 
 
 [tool.poetry.group.dev.dependencies]
