@@ -11,8 +11,7 @@ class SimpleGameStateEncoding:
         bits = 1
         while max_compressed > (1 << bits):
             bits += 1
-        if bits != 13:
-            raise RuntimeError("Expected the middle lane to take 13 bits")
+        assert bits == 13, f"Expected the middle lane to take 13 bits, got {bits}"
 
     def generate_middle_lane_compression(self) -> List[int]:
         middle_lane_compression = [-1] * 0xFFFF
@@ -57,8 +56,7 @@ class SimpleGameStateEncoding:
             state |= occupant << (2 * index)
 
         compressed = self.middle_lane_compression[state]
-        if compressed == -1:
-            raise ValueError("Illegal board state!")
+        assert compressed != -1, f"Failed to compress middle lane state {state}"
 
         return compressed
 
