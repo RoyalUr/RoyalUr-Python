@@ -143,7 +143,7 @@ class RuleSet(ABC):
         """
         The paths that each player must take around the board.
         """
-        self._paths
+        return self._paths
 
     @property
     def dice_factory(self) -> Callable[[], Dice]:
