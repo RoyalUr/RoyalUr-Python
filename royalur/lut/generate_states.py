@@ -148,6 +148,8 @@ def produce_states():
             loop_board_states(game, 0)
     game_consumer(None)
 
+class LiteClass:
+    pass
 
 def consume_states():
     encoding = SimpleGameStateEncoding()
@@ -163,13 +165,21 @@ def consume_states():
         board = state_data["board"]
         light_score = state_data["light_player_score"]
         dark_score = state_data["dark_player_score"]
+        light_piece_count = state_data["light_player_piece_count"]
+        dark_piece_count = state_data["dark_player_piece_count"]
         board_state = "".join(
             [
                 piece._owner._character if piece is not None else "."
                 for piece in board._pieces
             ]
         )
-        game_buffer[consumed_count % BUFFER_SIZE] = f"{board_state} {light_score} {dark_score} {encoding.encode_board(board)}\n"
+        lc = LiteClass()
+        lc.board = board
+        lc.dark_player = LiteClass()
+        lc.dark_player._piece_count = dark_piece_count
+        lc.light_player = LiteClass()
+        lc.light_player._piece_count = light_piece_count
+        game_buffer[consumed_count % BUFFER_SIZE] = f"{board_state} {light_score} {dark_score} {encoding.encode_game_state(lc)}\n"
         consumed_count += 1
         if consumed_count % BUFFER_SIZE == 0 and consumed_count > 0:
             with open(f"game_states_{consumed_count // BUFFER_SIZE}.txt", "w") as f:
@@ -199,6 +209,8 @@ def game_consumer(game):
             "board": state._board.copy(),
             "light_player_score": state._light_player._score,
             "dark_player_score": state._dark_player._score,
+            "light_player_piece_count": state._light_player._piece_count,
+            "dark_player_piece_count": state._dark_player._piece_count,
         }
     )
 

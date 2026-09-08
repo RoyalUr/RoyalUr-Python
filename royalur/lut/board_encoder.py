@@ -86,11 +86,11 @@ class SimpleGameStateEncoding:
         return right_lane | (middle_lane << 6) | (left_lane << 19)
 
     def encode_game_state(self, game_state):
-        if not game_state.get_turn() == PlayerType.LIGHT:
-            raise ValueError(
-                "Only game states where it is the light player's "
-                "turn are supported by this encoding"
-            )
+        #if not game_state.get_turn() == PlayerType.LIGHT:
+        #    raise ValueError(
+        #        "Only game states where it is the light player's "
+        #        "turn are supported by this encoding"
+        #    )
 
         state = self.encode_board(game_state.board)
         state |= game_state.dark_player._piece_count << 25
